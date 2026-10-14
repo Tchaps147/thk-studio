@@ -61,8 +61,38 @@ artifact runtime's `sample` interface; outside claude.ai it shows the prototype'
 message and grooves and variations keep working. Phase 3 replaces the sampler with `apps/api`. Export
 downloads the zip directly. Cloud save and open are left out until Phase 5, as the plan allows.
 
+## Phase 3 (started early, on request): the assistant through the API
+
+**D13. `apps/api` runs Claude's tool loop on the server.** `POST /api/assistant` takes the song,
+selection, request, recent turns and tier; it runs the six tools from `@thk/song` against a copy of
+the song and returns the reply, every step's outcome, the edits that succeeded and any offered
+variations. The browser replays those edits through the same tools as one undo step and shows the
+variations as Try / Keep cards. Failed tool calls go back to Claude as errors and change nothing.
+
+**D14. Model and settings.** Claude Opus 5.5 (`claude-opus-5-5`) for both modes; Fast is effort
+`low`, Thorough is effort `high`. Rules and catalog are one cached system block. Server-side refusal
+fallbacks are on (`fallbacks: "default"`). Per-client limit of 30 requests per 10 minutes; each request
+logs its tokens and the running dollar cost of the session.
+
+**D16. Personal use runs on the owner's Claude account, not an API key.** By default
+`apps/api/src/account.ts` reaches Claude through the Claude Agent SDK, signed in the way Claude Code
+is on this machine (`claude auth login`). Claude gets only the six studio tools on an in-process MCP
+server (no built-in tools, no user settings), and they run through the same `runTool()` as the API
+path, so the browser replays edits identically. Anthropic allows subscription sign-in only for the
+owner's own use: before anyone else uses the app, set `ANTHROPIC_API_KEY` (or `THK_ASSISTANT=api`)
+and the server switches to the API path (D13-D14).
+
+**D15. Running it.** `pnpm dev` (tools/dev.mjs) starts the API on :5191 and Vite on :5190, which
+proxies `/api`. The key comes from `ANTHROPIC_API_KEY` or `.env.local` (git-ignored; see
+`.env.example`). Node runs the API's TypeScript directly (`--experimental-strip-types`), which is why
+`kit.ts` imports its JSON with `with { type: "json" }`. Inside claude.ai the old `sample` runtime path
+still works when the API has no key.
+
+**Not done for Phase 3 yet:** `mix_check` and `set_macros` (they need Phase 2's mix engine), streaming
+the reply as it is written, and accounts (the rate limit is per IP).
+
 ## Open items for the product owner
 
 - HANDOFF.md section 9 questions are unchanged (pricing, reference sounds, platforms, name).
 - Compressed playback format (D9) needs a decision after measurement.
-- CI hasn't run on GitHub yet: the repo has no remote and nothing is committed.
+- CI on GitHub (github.com/Tchaps147/thk-studio): check the Actions tab after each push; the strict kit check and the browser tests have only run on macOS so far.

@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ../../tools/kit-web.mjs && vite",
+    "dev": "node ../../tools/dev.mjs",
     "build": "node ../../tools/kit-web.mjs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@thk/api": "workspace:*",
     "@thk/audio": "workspace:*",
     "@thk/song": "workspace:*",
     "immer": "^10.2.0",

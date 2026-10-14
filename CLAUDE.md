@@ -1,6 +1,6 @@
 # THK Studio
 
-A browser app where anybody can make great tech house: an arrangement + piano roll, a synthesized sound library, and an AI co-producer that edits patterns through tools. The working prototype is in `prototype/`; the sound library and its generator are in `assets/` and `tools/sound-engine/`. The port lives in `packages/song` (pure song logic), `packages/audio` (engine, scheduler, offline render) and `apps/web` (React app). Decisions made during the port are in `docs/decisions.md`.
+A browser app where anybody can make great tech house: an arrangement + piano roll, a synthesized sound library, and an AI co-producer that edits patterns through tools. The working prototype is in `prototype/`; the sound library and its generator are in `assets/` and `tools/sound-engine/`. The port lives in `packages/song` (pure song logic), `packages/audio` (engine, scheduler, offline render) `apps/web` (React app) and `apps/api` (the assistant's server-side tool loop). Decisions made during the port are in `docs/decisions.md`.
 
 **Read `HANDOFF.md` first.** It covers the product principles, how the prototype works, decisions already made, and the phased plan. Work phase by phase; don't start a phase before the previous one's acceptance criteria pass.
 
@@ -9,7 +9,8 @@ A browser app where anybody can make great tech house: an arrangement + piano ro
 ```bash
 corepack pnpm install                         # JS deps (pnpm 9)
 pip install -r requirements.txt               # Python deps for the sound engine
-pnpm dev                                      # studio at http://localhost:5190
+pnpm dev                                      # studio at http://localhost:5190 + assistant API on :5191
+# the assistant needs ANTHROPIC_API_KEY in .env.local (copy .env.example)
 pnpm test                                     # Vitest: song logic, audio engine, parity with the prototype
 pnpm test:e2e                                 # Playwright against a production build on :4190
 pnpm lint && pnpm typecheck

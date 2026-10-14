@@ -8,3 +8,5 @@ apps/web/public/kit/
 test-results/
 playwright-report/
 .DS_Store
+.env.local
+.env

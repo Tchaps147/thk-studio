@@ -7,16 +7,17 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm --filter @thk/web dev",
-    "build": "pnpm --filter @thk/web build",
+    "dev": "node tools/dev.mjs",
+    "build": "node tools/kit-web.mjs && node apps/web/node_modules/vite/bin/vite.js build apps/web",
     "kit:web": "node tools/kit-web.mjs",
-    "typecheck": "tsc -p packages/song && tsc -p packages/audio && tsc -p apps/web && tsc -p e2e",
+    "typecheck": "tsc -p packages/song && tsc -p packages/audio && tsc -p apps/api && tsc -p apps/web && tsc -p e2e",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "fixtures:prototype": "node tools/prototype-events.mjs"
+    "fixtures:prototype": "node tools/prototype-events.mjs",
+    "preview": "node tools/dev.mjs preview"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

@@ -6,7 +6,7 @@ PY=${PY:-.venv/bin/python}
 node tools/kit-web.mjs --check
 node node_modules/eslint/bin/eslint.js .
 node node_modules/prettier/bin/prettier.cjs --check . > /dev/null
-for p in packages/song packages/audio apps/web e2e; do node node_modules/typescript/bin/tsc -p $p; done
+for p in packages/song packages/audio apps/api apps/web e2e; do node node_modules/typescript/bin/tsc -p $p; done
 echo "types ok"
 node node_modules/vitest/vitest.mjs run
 node node_modules/@playwright/test/cli.js test

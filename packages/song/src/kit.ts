@@ -1,4 +1,4 @@
-import data from "./kit-data.json";
+import data from "./kit-data.json" with { type: "json" };
 import type { Sound, SoundKind } from "./types.ts";
 
 export const SPB = 16;

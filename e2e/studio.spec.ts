@@ -44,9 +44,13 @@ const ev = <R>(page: Page, body: string): Promise<R> =>
     `(async () => { const t = window.__thk; const S = () => t.get().song; const find = n => t.song.findTrack(S(), n); ${body} })()`,
   );
 
-async function fresh(page: Page, errors: string[]) {
+/** Loads a clean studio. By default the API reports no key, so the claude.ai stub drives the assistant. */
+async function fresh(page: Page, errors: string[], apiConfigured = false) {
   page.on("pageerror", (e) => errors.push(String(e)));
   await page.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
+  await page.route("**/api/assistant/status", (r) =>
+    r.fulfill({ json: { configured: apiConfigured, model: "claude-opus-5-5" } }),
+  );
   await page.addInitScript(STUB);
   await page.goto("/");
   await page.evaluate(() => localStorage.clear());
@@ -151,6 +155,67 @@ test.describe("prototype smoke test, ported", () => {
       "✕ Claude is busy or you've reached a usage limit. Try again in a little while.",
     );
     expect(await ev<number>(page, "return t.get().history.past.length;")).toBe(0);
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("assistant through the API", () => {
+  test("replays the server's edits as one undo step and shows its variations", async ({ page }) => {
+    const errors: string[] = [];
+    let sent: { request?: string; song?: { name: string }; tier?: string } = {};
+    await page.route("**/api/assistant", async (r) => {
+      sent = r.request().postDataJSON();
+      await r.fulfill({
+        json: {
+          text: "Added a kick and offbeat hats on Groove, and three bass ideas.",
+          steps: [
+            { tool: "write_drums", ok: true, text: "Groove bars 1–16 (1-bar pattern): kick Classic 909 ×4" },
+            { tool: "write_drums", ok: false, text: 'Unknown drum sound "banana".' },
+            { tool: "set_song", ok: true, text: "Song: 126 BPM" },
+            { tool: "offer_variations", ok: true, text: "Shown 1 variations as cards." },
+          ],
+          edits: [
+            { tool: "write_drums", input: { track: "Groove", start_bar: 1, bars: 16, pattern_bars: 1, lanes: [{ sound: "kick", steps: "x---x---x---x---" }, { sound: "open hat", steps: "--x-" }] } },
+            { tool: "set_song", input: { bpm: 126 } },
+          ],
+          variations: [{ title: "Bass ideas", specs: [{ name: "Low roll", why: "", kind: "notes", track: "Bass", start: 8, len: 16, loop: 1, notes: [{ step: 2, note: "F1", len: 1 }], replace: true }] }],
+          stop: "done",
+          usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0 },
+        },
+      });
+    }); // prettier-ignore
+    await fresh(page, errors, true);
+    await expect(page.locator("#sendBtn")).toBeEnabled();
+    await page.fill("#prompt", "kick and hats please");
+    await page.keyboard.press("Enter");
+    const bot = page.locator(".msg.bot").last();
+    await expect(bot.locator(".body")).toHaveText("Added a kick and offbeat hats on Groove, and three bass ideas.");
+    expect(sent.request).toBe("kick and hats please");
+    expect(sent.song?.name).toBe("Late Shift (demo)");
+    expect(sent.tier).toBe("quick");
+    await expect(bot.locator(".acts > div")).toHaveText([
+      "✓ Groove bars 1–16 (1-bar pattern): kick Classic 909 ×4, open hat Medium ×4",
+      '✕ Unknown drum sound "banana".',
+      "✓ Song: 126 BPM",
+      "✓ Offered 1 variations",
+    ]);
+    expect(await ev(page, "return [find('Groove').clips[0].notes.length, S().bpm];")).toEqual([8, 126]);
+    expect(await ev<number>(page, "return t.get().history.past.length;")).toBe(1);
+    await expect(bot.locator(".var")).toHaveCount(1);
+    await bot.getByRole("button", { name: "Undo these changes" }).click();
+    expect(await ev(page, "return [find('Groove') ?? null, S().bpm];")).toEqual([null, 125]);
+    expect(errors).toEqual([]);
+  });
+
+  test("explains a missing key and a rejected key", async ({ page }) => {
+    const errors: string[] = [];
+    await page.route("**/api/assistant", (r) => r.fulfill({ status: 502, json: { code: "auth" } }));
+    await fresh(page, errors, true);
+    await page.fill("#prompt", "hello");
+    await page.keyboard.press("Enter");
+    await expect(page.locator(".acts .err").last()).toHaveText(
+      "✕ Anthropic rejected the API key. Check ANTHROPIC_API_KEY in .env.local, then restart the studio.",
+    );
     expect(errors).toEqual([]);
   });
 });

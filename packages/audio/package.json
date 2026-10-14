@@ -1,0 +1,13 @@
+{
+  "name": "@thk/audio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "@thk/song": "workspace:*"
+  }
+}

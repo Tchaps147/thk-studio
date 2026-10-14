@@ -1,0 +1,922 @@
+[
+ {
+  "file": "Kicks/THK_Kick_01_Punchy_Tight_F.wav",
+  "kind": "kick",
+  "name": "Punchy Tight",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.32
+ },
+ {
+  "file": "Kicks/THK_Kick_02_Classic_909_G.wav",
+  "kind": "kick",
+  "name": "Classic 909",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_03_Long_Boom_F.wav",
+  "kind": "kick",
+  "name": "Long Boom",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.95
+ },
+ {
+  "file": "Kicks/THK_Kick_04_Rumble_Base_E.wav",
+  "kind": "kick",
+  "name": "Rumble Base",
+  "note": "E",
+  "hz": 41.2,
+  "dur": 1.1
+ },
+ {
+  "file": "Kicks/THK_Kick_05_Clicky_Top_A.wav",
+  "kind": "kick",
+  "name": "Clicky Top",
+  "note": "A",
+  "hz": 55.0,
+  "dur": 0.4
+ },
+ {
+  "file": "Kicks/THK_Kick_06_Driven_Saturated_G.wav",
+  "kind": "kick",
+  "name": "Driven Saturated",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.55
+ },
+ {
+  "file": "Kicks/THK_Kick_07_Soft_Round_F.wav",
+  "kind": "kick",
+  "name": "Soft Round",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_08_Knock_Short_As.wav",
+  "kind": "kick",
+  "name": "Knock Short",
+  "note": "A#",
+  "hz": 58.27,
+  "dur": 0.22
+ },
+ {
+  "file": "Kicks/THK_Kick_09_Deep_Sub_D.wav",
+  "kind": "kick",
+  "name": "Deep Sub",
+  "note": "D",
+  "hz": 36.71,
+  "dur": 1.0
+ },
+ {
+  "file": "Kicks/THK_Kick_10_Thumpy_808ish_F.wav",
+  "kind": "kick",
+  "name": "Thumpy 808ish",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 1.2
+ },
+ {
+  "file": "Kicks/THK_Kick_11_Distorted_Hard_G.wav",
+  "kind": "kick",
+  "name": "Distorted Hard",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_12_Minimal_Tick_A.wav",
+  "kind": "kick",
+  "name": "Minimal Tick",
+  "note": "A",
+  "hz": 55.0,
+  "dur": 0.28
+ },
+ {
+  "file": "Kicks/THK_Kick_13_Tape_Warm_Fs.wav",
+  "kind": "kick",
+  "name": "Tape Warm",
+  "note": "F#",
+  "hz": 46.25,
+  "dur": 0.55
+ },
+ {
+  "file": "Kicks/THK_Kick_14_Snappy_Sweep_G.wav",
+  "kind": "kick",
+  "name": "Snappy Sweep",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.42
+ },
+ {
+  "file": "Kicks/THK_Kick_15_Noise_Layered_F.wav",
+  "kind": "kick",
+  "name": "Noise Layered",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_16_Triangle_Body_A.wav",
+  "kind": "kick",
+  "name": "Triangle Body",
+  "note": "A",
+  "hz": 55.0,
+  "dur": 0.45
+ },
+ {
+  "file": "Kicks/THK_Kick_17_Boxy_Mid_Gs.wav",
+  "kind": "kick",
+  "name": "Boxy Mid",
+  "note": "G#",
+  "hz": 51.91,
+  "dur": 0.4
+ },
+ {
+  "file": "Kicks/THK_Kick_18_Hollow_Long_E.wav",
+  "kind": "kick",
+  "name": "Hollow Long",
+  "note": "E",
+  "hz": 41.2,
+  "dur": 0.85
+ },
+ {
+  "file": "Kicks/THK_Kick_19_Crunchy_Crush_G.wav",
+  "kind": "kick",
+  "name": "Crunchy Crush",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.45
+ },
+ {
+  "file": "Kicks/THK_Kick_20_Big_Tech_F.wav",
+  "kind": "kick",
+  "name": "Big Tech",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.75
+ },
+ {
+  "file": "Bass/THK_Bass_01_Sub_Pluck_C.wav",
+  "kind": "bass",
+  "name": "Sub Pluck",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.6
+ },
+ {
+  "file": "Bass/THK_Bass_02_Rolling_Saw_Pluck_C.wav",
+  "kind": "bass",
+  "name": "Rolling Saw Pluck",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.45
+ },
+ {
+  "file": "Bass/THK_Bass_03_Rubber_Bend_C.wav",
+  "kind": "bass",
+  "name": "Rubber Bend",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.7
+ },
+ {
+  "file": "Bass/THK_Bass_04_Acid_303_C.wav",
+  "kind": "bass",
+  "name": "Acid 303",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.55
+ },
+ {
+  "file": "Bass/THK_Bass_05_Acid_Square_C.wav",
+  "kind": "bass",
+  "name": "Acid Square",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.55
+ },
+ {
+  "file": "Bass/THK_Bass_06_Organ_M1_C.wav",
+  "kind": "bass",
+  "name": "Organ M1",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.6
+ },
+ {
+  "file": "Bass/THK_Bass_07_FM_Growl_C.wav",
+  "kind": "bass",
+  "name": "FM Growl",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.9
+ },
+ {
+  "file": "Bass/THK_Bass_08_FM_Pluck_C.wav",
+  "kind": "bass",
+  "name": "FM Pluck",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.5
+ },
+ {
+  "file": "Bass/THK_Bass_09_Reese_Detuned_C.wav",
+  "kind": "bass",
+  "name": "Reese Detuned",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 2.0
+ },
+ {
+  "file": "Bass/THK_Bass_10_Sub_Sustain_C.wav",
+  "kind": "bass",
+  "name": "Sub Sustain",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 1.6
+ },
+ {
+  "file": "Bass/THK_Bass_11_Donk_C.wav",
+  "kind": "bass",
+  "name": "Donk",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.4
+ },
+ {
+  "file": "Bass/THK_Bass_12_Square_Stab_C.wav",
+  "kind": "bass",
+  "name": "Square Stab",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.35
+ },
+ {
+  "file": "Bass/THK_Bass_13_Wobble_Filter_C.wav",
+  "kind": "bass",
+  "name": "Wobble Filter",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 2.0
+ },
+ {
+  "file": "Bass/THK_Bass_14_Fold_Grit_C.wav",
+  "kind": "bass",
+  "name": "Fold Grit",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.7
+ },
+ {
+  "file": "Bass/THK_Bass_15_Hollow_Pulse_C.wav",
+  "kind": "bass",
+  "name": "Hollow Pulse",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.8
+ },
+ {
+  "file": "Bass/THK_Bass_16_Plucky_Chicago_C.wav",
+  "kind": "bass",
+  "name": "Plucky Chicago",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.3
+ },
+ {
+  "file": "Bass/THK_Bass_17_Talky_Formant_C.wav",
+  "kind": "bass",
+  "name": "Talky Formant",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.9
+ },
+ {
+  "file": "Bass/THK_Bass_18_Gritty_Driven_C.wav",
+  "kind": "bass",
+  "name": "Gritty Driven",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.6
+ },
+ {
+  "file": "Bass/THK_Bass_19_Sub_Octave_Layer_C.wav",
+  "kind": "bass",
+  "name": "Sub Octave Layer",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.8
+ },
+ {
+  "file": "Bass/THK_Bass_20_Filter_Swell_C.wav",
+  "kind": "bass",
+  "name": "Filter Swell",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 1.8
+ },
+ {
+  "file": "Kicks/THK_Kick_21_Sub_Thud_D.wav",
+  "kind": "kick",
+  "name": "Sub Thud",
+  "note": "D",
+  "hz": 36.71,
+  "dur": 0.9
+ },
+ {
+  "file": "Kicks/THK_Kick_22_Punch_Drive_A.wav",
+  "kind": "kick",
+  "name": "Punch Drive",
+  "note": "A",
+  "hz": 55.0,
+  "dur": 0.36
+ },
+ {
+  "file": "Kicks/THK_Kick_23_Pillow_Soft_G.wav",
+  "kind": "kick",
+  "name": "Pillow Soft",
+  "note": "G",
+  "hz": 49.0,
+  "dur": 0.45
+ },
+ {
+  "file": "Kicks/THK_Kick_24_Lofi_Dusty_F.wav",
+  "kind": "kick",
+  "name": "Lofi Dusty",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_25_Chest_Punch_Gs.wav",
+  "kind": "kick",
+  "name": "Chest Punch",
+  "note": "G#",
+  "hz": 51.91,
+  "dur": 0.5
+ },
+ {
+  "file": "Kicks/THK_Kick_26_Hard_Tech_E.wav",
+  "kind": "kick",
+  "name": "Hard Tech",
+  "note": "E",
+  "hz": 41.2,
+  "dur": 0.7
+ },
+ {
+  "file": "Kicks/THK_Kick_27_Woody_Knock_B.wav",
+  "kind": "kick",
+  "name": "Woody Knock",
+  "note": "B",
+  "hz": 61.74,
+  "dur": 0.26
+ },
+ {
+  "file": "Kicks/THK_Kick_28_Deep_House_F.wav",
+  "kind": "kick",
+  "name": "Deep House",
+  "note": "F",
+  "hz": 43.65,
+  "dur": 0.6
+ },
+ {
+  "file": "Kicks/THK_Kick_29_Stomp_Long_Ds.wav",
+  "kind": "kick",
+  "name": "Stomp Long",
+  "note": "D#",
+  "hz": 38.89,
+  "dur": 1.05
+ },
+ {
+  "file": "Kicks/THK_Kick_30_Zap_Sweep_A.wav",
+  "kind": "kick",
+  "name": "Zap Sweep",
+  "note": "A",
+  "hz": 55.0,
+  "dur": 0.4
+ },
+ {
+  "file": "Bass/THK_Bass_21_Sub_Glide_Up_C.wav",
+  "kind": "bass",
+  "name": "Sub Glide Up",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.8
+ },
+ {
+  "file": "Bass/THK_Bass_22_Detroit_Pulse_Pluck_C.wav",
+  "kind": "bass",
+  "name": "Detroit Pulse Pluck",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.5
+ },
+ {
+  "file": "Bass/THK_Bass_23_FM_Tick_C.wav",
+  "kind": "bass",
+  "name": "FM Tick",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.35
+ },
+ {
+  "file": "Bass/THK_Bass_24_Tok_C.wav",
+  "kind": "bass",
+  "name": "Tok",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.22
+ },
+ {
+  "file": "Bass/THK_Bass_25_Fat_Ladder_C.wav",
+  "kind": "bass",
+  "name": "Fat Ladder",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.7
+ },
+ {
+  "file": "Bass/THK_Bass_26_Octave_Drop_Zap_C.wav",
+  "kind": "bass",
+  "name": "Octave Drop Zap",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.6
+ },
+ {
+  "file": "Bass/THK_Bass_27_Flanged_Saw_C.wav",
+  "kind": "bass",
+  "name": "Flanged Saw",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 1.3
+ },
+ {
+  "file": "Bass/THK_Bass_28_Ring_Mod_Bell_C.wav",
+  "kind": "bass",
+  "name": "Ring Mod Bell",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.6
+ },
+ {
+  "file": "Bass/THK_Bass_29_Distorted_808_C.wav",
+  "kind": "bass",
+  "name": "Distorted 808",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 1.4
+ },
+ {
+  "file": "Bass/THK_Bass_30_Fifth_Stab_C.wav",
+  "kind": "bass",
+  "name": "Fifth Stab",
+  "note": "C",
+  "hz": 65.41,
+  "dur": 0.45
+ },
+ {
+  "file": "Claps/THK_Clap_01_Classic.wav",
+  "kind": "clap",
+  "name": "Classic",
+  "note": "",
+  "hz": 0,
+  "dur": 0.49
+ },
+ {
+  "file": "Claps/THK_Clap_02_Tight.wav",
+  "kind": "clap",
+  "name": "Tight",
+  "note": "",
+  "hz": 0,
+  "dur": 0.29
+ },
+ {
+  "file": "Claps/THK_Clap_03_Wide.wav",
+  "kind": "clap",
+  "name": "Wide",
+  "note": "",
+  "hz": 0,
+  "dur": 0.93
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_01_Tight.wav",
+  "kind": "hat_closed",
+  "name": "Tight",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_02_Crisp.wav",
+  "kind": "hat_closed",
+  "name": "Crisp",
+  "note": "",
+  "hz": 0,
+  "dur": 0.16
+ },
+ {
+  "file": "Hats_Open/THK_HatO_01_Medium.wav",
+  "kind": "hat_open",
+  "name": "Medium",
+  "note": "",
+  "hz": 0,
+  "dur": 0.6
+ },
+ {
+  "file": "Hats_Open/THK_HatO_02_Long.wav",
+  "kind": "hat_open",
+  "name": "Long",
+  "note": "",
+  "hz": 0,
+  "dur": 1.0
+ },
+ {
+  "file": "Shakers/THK_Shaker_01_Classic.wav",
+  "kind": "shaker",
+  "name": "Classic",
+  "note": "",
+  "hz": 0,
+  "dur": 0.18
+ },
+ {
+  "file": "Rims/THK_Rim_01_Shot.wav",
+  "kind": "rim",
+  "name": "Shot",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Snares/THK_Snare_01_Tech.wav",
+  "kind": "snare",
+  "name": "Tech",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Perc/THK_Perc_01_Conga_Hi.wav",
+  "kind": "perc",
+  "name": "Conga Hi",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Toms/THK_Tom_01_Low.wav",
+  "kind": "tom",
+  "name": "Low",
+  "note": "",
+  "hz": 0,
+  "dur": 0.6
+ },
+ {
+  "file": "Claps/THK_Clap_04_Snappy.wav",
+  "kind": "clap",
+  "name": "Snappy",
+  "note": "",
+  "hz": 0,
+  "dur": 0.25
+ },
+ {
+  "file": "Claps/THK_Clap_05_Room.wav",
+  "kind": "clap",
+  "name": "Room",
+  "note": "",
+  "hz": 0,
+  "dur": 1.25
+ },
+ {
+  "file": "Claps/THK_Clap_06_Layered.wav",
+  "kind": "clap",
+  "name": "Layered",
+  "note": "",
+  "hz": 0,
+  "dur": 0.53
+ },
+ {
+  "file": "Claps/THK_Clap_07_Lofi.wav",
+  "kind": "clap",
+  "name": "Lofi",
+  "note": "",
+  "hz": 0,
+  "dur": 0.45
+ },
+ {
+  "file": "Claps/THK_Clap_08_Big_909.wav",
+  "kind": "clap",
+  "name": "Big 909",
+  "note": "",
+  "hz": 0,
+  "dur": 0.77
+ },
+ {
+  "file": "Snares/THK_Snare_02_909.wav",
+  "kind": "snare",
+  "name": "909",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Snares/THK_Snare_03_Tight.wav",
+  "kind": "snare",
+  "name": "Tight",
+  "note": "",
+  "hz": 0,
+  "dur": 0.22
+ },
+ {
+  "file": "Snares/THK_Snare_04_Rimmy.wav",
+  "kind": "snare",
+  "name": "Rimmy",
+  "note": "",
+  "hz": 0,
+  "dur": 0.25
+ },
+ {
+  "file": "Snares/THK_Snare_05_Noise_Burst.wav",
+  "kind": "snare",
+  "name": "Noise Burst",
+  "note": "",
+  "hz": 0,
+  "dur": 0.5
+ },
+ {
+  "file": "Snares/THK_Snare_06_Lofi.wav",
+  "kind": "snare",
+  "name": "Lofi",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_03_Dark.wav",
+  "kind": "hat_closed",
+  "name": "Dark",
+  "note": "",
+  "hz": 0,
+  "dur": 0.14
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_04_Noise.wav",
+  "kind": "hat_closed",
+  "name": "Noise",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_05_Tick.wav",
+  "kind": "hat_closed",
+  "name": "Tick",
+  "note": "",
+  "hz": 0,
+  "dur": 0.06
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_06_Metal.wav",
+  "kind": "hat_closed",
+  "name": "Metal",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_07_Soft.wav",
+  "kind": "hat_closed",
+  "name": "Soft",
+  "note": "",
+  "hz": 0,
+  "dur": 0.15
+ },
+ {
+  "file": "Hats_Closed/THK_HatC_08_Shuffle.wav",
+  "kind": "hat_closed",
+  "name": "Shuffle",
+  "note": "",
+  "hz": 0,
+  "dur": 0.2
+ },
+ {
+  "file": "Hats_Open/THK_HatO_03_Short.wav",
+  "kind": "hat_open",
+  "name": "Short",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Hats_Open/THK_HatO_04_Dark.wav",
+  "kind": "hat_open",
+  "name": "Dark",
+  "note": "",
+  "hz": 0,
+  "dur": 0.6
+ },
+ {
+  "file": "Hats_Open/THK_HatO_05_Noise.wav",
+  "kind": "hat_open",
+  "name": "Noise",
+  "note": "",
+  "hz": 0,
+  "dur": 0.55
+ },
+ {
+  "file": "Hats_Open/THK_HatO_06_Sizzle.wav",
+  "kind": "hat_open",
+  "name": "Sizzle",
+  "note": "",
+  "hz": 0,
+  "dur": 0.8
+ },
+ {
+  "file": "Rides/THK_Ride_01_Ping.wav",
+  "kind": "ride",
+  "name": "Ping",
+  "note": "",
+  "hz": 0,
+  "dur": 1.6
+ },
+ {
+  "file": "Rides/THK_Ride_02_Wash.wav",
+  "kind": "ride",
+  "name": "Wash",
+  "note": "",
+  "hz": 0,
+  "dur": 2.2
+ },
+ {
+  "file": "Rides/THK_Ride_03_Bell.wav",
+  "kind": "ride",
+  "name": "Bell",
+  "note": "",
+  "hz": 0,
+  "dur": 1.4
+ },
+ {
+  "file": "Rides/THK_Ride_04_Dark.wav",
+  "kind": "ride",
+  "name": "Dark",
+  "note": "",
+  "hz": 0,
+  "dur": 1.8
+ },
+ {
+  "file": "Shakers/THK_Shaker_02_Tight.wav",
+  "kind": "shaker",
+  "name": "Tight",
+  "note": "",
+  "hz": 0,
+  "dur": 0.1
+ },
+ {
+  "file": "Shakers/THK_Shaker_03_Long.wav",
+  "kind": "shaker",
+  "name": "Long",
+  "note": "",
+  "hz": 0,
+  "dur": 0.3
+ },
+ {
+  "file": "Shakers/THK_Shaker_04_Bright.wav",
+  "kind": "shaker",
+  "name": "Bright",
+  "note": "",
+  "hz": 0,
+  "dur": 0.16
+ },
+ {
+  "file": "Shakers/THK_Shaker_05_Soft.wav",
+  "kind": "shaker",
+  "name": "Soft",
+  "note": "",
+  "hz": 0,
+  "dur": 0.2
+ },
+ {
+  "file": "Shakers/THK_Shaker_06_Tambourine.wav",
+  "kind": "shaker",
+  "name": "Tambourine",
+  "note": "",
+  "hz": 0,
+  "dur": 0.25
+ },
+ {
+  "file": "Rims/THK_Rim_02_Click.wav",
+  "kind": "rim",
+  "name": "Click",
+  "note": "",
+  "hz": 0,
+  "dur": 0.08
+ },
+ {
+  "file": "Rims/THK_Rim_03_Woody.wav",
+  "kind": "rim",
+  "name": "Woody",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Rims/THK_Rim_04_High.wav",
+  "kind": "rim",
+  "name": "High",
+  "note": "",
+  "hz": 0,
+  "dur": 0.12
+ },
+ {
+  "file": "Rims/THK_Rim_05_Clave.wav",
+  "kind": "rim",
+  "name": "Clave",
+  "note": "",
+  "hz": 0,
+  "dur": 0.2
+ },
+ {
+  "file": "Perc/THK_Perc_02_Conga_Low.wav",
+  "kind": "perc",
+  "name": "Conga Low",
+  "note": "",
+  "hz": 0,
+  "dur": 0.4
+ },
+ {
+  "file": "Perc/THK_Perc_03_Bongo_Hi.wav",
+  "kind": "perc",
+  "name": "Bongo Hi",
+  "note": "",
+  "hz": 0,
+  "dur": 0.25
+ },
+ {
+  "file": "Perc/THK_Perc_04_Bongo_Low.wav",
+  "kind": "perc",
+  "name": "Bongo Low",
+  "note": "",
+  "hz": 0,
+  "dur": 0.3
+ },
+ {
+  "file": "Perc/THK_Perc_05_Cowbell.wav",
+  "kind": "perc",
+  "name": "Cowbell",
+  "note": "",
+  "hz": 0,
+  "dur": 0.35
+ },
+ {
+  "file": "Perc/THK_Perc_06_Woodblock.wav",
+  "kind": "perc",
+  "name": "Woodblock",
+  "note": "",
+  "hz": 0,
+  "dur": 0.15
+ },
+ {
+  "file": "Perc/THK_Perc_07_Blip.wav",
+  "kind": "perc",
+  "name": "Blip",
+  "note": "",
+  "hz": 0,
+  "dur": 0.2
+ },
+ {
+  "file": "Perc/THK_Perc_08_Metal.wav",
+  "kind": "perc",
+  "name": "Metal",
+  "note": "",
+  "hz": 0,
+  "dur": 0.4
+ },
+ {
+  "file": "Toms/THK_Tom_02_Mid.wav",
+  "kind": "tom",
+  "name": "Mid",
+  "note": "",
+  "hz": 0,
+  "dur": 0.5
+ },
+ {
+  "file": "Toms/THK_Tom_03_High.wav",
+  "kind": "tom",
+  "name": "High",
+  "note": "",
+  "hz": 0,
+  "dur": 0.45
+ },
+ {
+  "file": "Toms/THK_Tom_04_Floor.wav",
+  "kind": "tom",
+  "name": "Floor",
+  "note": "",
+  "hz": 0,
+  "dur": 0.8
+ }
+]

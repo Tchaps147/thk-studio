@@ -1,0 +1,14 @@
+{
+ "THK_Perc_01_Clap_Classic": "THK_Clap_01_Classic",
+ "THK_Perc_02_Clap_Tight": "THK_Clap_02_Tight",
+ "THK_Perc_03_Clap_Wide": "THK_Clap_03_Wide",
+ "THK_Perc_04_Hat_Closed_Tight": "THK_HatC_01_Tight",
+ "THK_Perc_05_Hat_Closed_Crisp": "THK_HatC_02_Crisp",
+ "THK_Perc_06_Hat_Open": "THK_HatO_01_Medium",
+ "THK_Perc_07_Hat_Open_Long": "THK_HatO_02_Long",
+ "THK_Perc_08_Shaker": "THK_Shaker_01_Classic",
+ "THK_Perc_09_Rim_Shot": "THK_Rim_01_Shot",
+ "THK_Perc_10_Snare_Tech": "THK_Snare_01_Tech",
+ "THK_Perc_11_Conga_Hi": "THK_Perc_01_Conga_Hi",
+ "THK_Perc_12_Tom_Low": "THK_Tom_01_Low"
+}

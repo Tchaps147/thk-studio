@@ -1,0 +1,10 @@
+prototype/dist/
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+dist/
+apps/web/public/kit/
+test-results/
+playwright-report/
+.DS_Store

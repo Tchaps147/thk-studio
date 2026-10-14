@@ -1,0 +1,25 @@
+{
+  "name": "@thk/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../tools/kit-web.mjs && vite",
+    "build": "node ../../tools/kit-web.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@thk/audio": "workspace:*",
+    "@thk/song": "workspace:*",
+    "immer": "^10.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^6.4.4"
+  }
+}

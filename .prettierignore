@@ -1,0 +1,13 @@
+assets/
+prototype/
+tools/sound-engine/
+pnpm-lock.yaml
+**/dist/
+apps/web/public/kit/
+packages/song/src/kit-data.json
+packages/audio/test/fixtures/
+test-results/
+playwright-report/
+.venv/
+HANDOFF.md
+CLAUDE.md

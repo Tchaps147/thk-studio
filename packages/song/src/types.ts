@@ -1,8 +1,11 @@
 // Song data model (HANDOFF.md 4.2). Bars are 0-based in data and 1-based in the UI and
 // everything the assistant sees. Steps are 16ths.
 
+import type { Patch } from "./patch.ts";
+
 export type SoundKind =
-  "kick" | "clap" | "snare" | "hat_closed" | "hat_open" | "ride" | "shaker" | "rim" | "perc" | "tom" | "bass";
+  | "kick" | "clap" | "snare" | "hat_closed" | "hat_open" | "ride" | "shaker" | "rim" | "perc" | "tom"
+  | "bass" | "lead" | "pad" | "stab" | "pluck" | "fx"; // prettier-ignore
 
 export interface Sound {
   id: string;
@@ -12,8 +15,12 @@ export interface Sound {
   note: string;
   hz: number;
   dur: number;
-  /** 60-bin peak envelope, 0..1. */
+  /** 60-bin peak envelope, 0..1 (empty for patches until rendered). */
   peaks: number[];
+  /** Synth settings: the sound is rendered from these instead of loaded from a file. */
+  patch?: Patch;
+  /** Made by the user (sound maker or assistant); stored in the song and the user's library. */
+  custom?: boolean;
 }
 
 export interface Note {
@@ -87,4 +94,6 @@ export interface Song {
   loop: LoopRange;
   cloudId?: string;
   tracks: Track[];
+  /** Sounds made for this song (sound maker, assistant). Tracks refer to them by id. */
+  sounds?: Sound[];
 }

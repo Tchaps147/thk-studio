@@ -295,7 +295,7 @@ test.describe("editing by hand", () => {
     expect(await ev(page, "return S().loop.on;")).toBe(true);
 
     await page.getByRole("button", { name: "Claps" }).click();
-    await expect(page.locator("#catCount")).toHaveText("8 sounds");
+    await expect(page.locator("#catCount")).toHaveText("10 sounds"); // 8 kit claps + 2 synth presets
     await page.locator(".item", { hasText: "Big 909" }).getByRole("button", { name: "Use" }).click();
     expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Clap_08_Big_909");
     await expect(page.locator("#toast")).toHaveText("Bass now plays Big 909.");
@@ -328,6 +328,82 @@ test.describe("editing by hand", () => {
     ]);
     await page.click("#undoBtn");
     await expect(page.locator("#songName")).toHaveValue("Late Shift (demo)");
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("sound maker", () => {
+  test("make a bass, shape it, save it onto the selected track: one undo step, kept in My sounds", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page.getByRole("button", { name: "Bass", exact: true }).click();
+    await page.getByTitle("Make a new sound in the sound maker").click();
+    const maker = page.getByTestId("sound-maker");
+    await expect(maker).toBeVisible();
+    await expect(maker.getByLabel("Instrument")).toHaveValue("bass");
+    await expect.poll(() => maker.locator("canvas").getAttribute("data-rendered")).not.toBe("0");
+    await maker.getByLabel("Sound name").fill("Night Bass");
+    const cutoff = maker.getByLabel("Cutoff", { exact: true });
+    const before = await ev<number>(page, "return t.get().maker.draft.patch.cutoff;");
+    await cutoff.focus();
+    for (let i = 0; i < 40; i++) await page.keyboard.press("ArrowLeft");
+    expect(await ev<number>(page, "return t.get().maker.draft.patch.cutoff;")).toBeLessThan(before);
+    await ev(page, "t.select({ tid: find('Bass').id });");
+    await maker.getByRole("button", { name: "Save and use on Bass" }).click();
+    expect(
+      await ev(page, "return [S().sounds.map(s => s.id), find('Bass').sample, t.get().history.past.length];"),
+    ).toEqual([["user_night_bass"], "user_night_bass", 1]);
+    await expect.poll(() => ev(page, "return !!t.audio().bank.get('user_night_bass');")).toBe(true);
+    await expect(page.locator("#blist .label.mine").first()).toHaveText("My sounds");
+    expect(await ev(page, "return JSON.parse(localStorage.getItem('thk-studio-sounds-v1')).map(s => s.id);")).toEqual([
+      "user_night_bass",
+    ]);
+    await page.click("#undoBtn");
+    expect(await ev(page, "return [(S().sounds || []).length, find('Bass').sample];")).toEqual([
+      0,
+      "THK_Bass_02_Rolling_Saw_Pluck_C",
+    ]);
+    expect(errors).toEqual([]);
+  });
+
+  test("copy a factory preset into an editable sound", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page.getByRole("button", { name: "Leads" }).click();
+    await page.locator("#blist .item").first().getByRole("button", { name: "Copy" }).click();
+    const maker = page.getByTestId("sound-maker");
+    await expect(maker.getByLabel("Sound name")).toHaveValue("Detuned Saw copy");
+    await maker.getByRole("button", { name: "Save sound" }).click();
+    expect(
+      await ev(
+        page,
+        "const s = S().sounds[0], p = t.song.KIT.find(k => k.id === 'THK_Lead_01_Detuned_Saw'); return [s.id, s.kind, JSON.stringify(s.patch) === JSON.stringify(p.patch)];",
+      ),
+    ).toEqual(["user_detuned_saw_copy", "lead", true]);
+    expect(errors).toEqual([]);
+  });
+
+  test("the assistant's design_sound edit is replayed in the browser", async ({ page }) => {
+    const errors: string[] = [];
+    await page.route("**/api/assistant", (r) =>
+      r.fulfill({
+        json: {
+          text: "Made Rubber Acid and put it on Bass.",
+          steps: [{ tool: "design_sound", ok: true, text: 'New bass "Rubber Acid" (user_rubber_acid), now on Bass' }],
+          edits: [{ tool: "design_sound", input: { name: "Rubber Acid", instrument: "bass", settings: { resonance: 12, cutoff: 400 }, track: "Bass" } }],
+          variations: [],
+          stop: "done",
+          usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0 },
+        },
+      }),
+    ); // prettier-ignore
+    await fresh(page, errors, true);
+    await page.fill("#prompt", "a rubbery acid bass please");
+    await page.keyboard.press("Enter");
+    await expect(page.locator(".msg.bot").last().locator(".body")).toHaveText("Made Rubber Acid and put it on Bass.");
+    expect(
+      await ev(page, "const s = S().sounds[0]; return [s.id, s.patch.resonance, s.patch.cutoff, find('Bass').sample];"),
+    ).toEqual(["user_rubber_acid", 12, 400, "user_rubber_acid"]);
     expect(errors).toEqual([]);
   });
 });

@@ -2,7 +2,7 @@
 // The engine follows the store's song; samples load lazily (the song's sounds first, a browser
 // category when its tab opens, anything else on first audition).
 import { Engine, SampleBank, Transport } from "@thk/audio";
-import { ROOT, SPB, type Track } from "@thk/song";
+import { MELODIC, ROOT, SPB, type Sound, type Track } from "@thk/song";
 import { get, setState, toast, useStudio } from "./store.ts";
 
 type Ctor = typeof AudioContext;
@@ -45,8 +45,19 @@ export function wake() {
 const now = () => audio().ctx.currentTime + 0.01;
 
 async function playWhenLoaded(id: string, fn: () => void) {
-  if (!audio().bank.has(id)) await audio().bank.load(id);
+  await audio().bank.load(id, get().song);
   fn();
+}
+/** Plays an unsaved sound (the sound maker's draft) at a pitch; renders it first if it changed. */
+export async function auditionDraft(s: Sound, p = ROOT) {
+  wake();
+  const { bank, engine } = audio();
+  if (!(await bank.loadSound(s, get().song))) return;
+  engine.trigger(null, s.id, now(), {
+    rate: 2 ** ((p - ROOT) / 12),
+    ...(MELODIC.has(s.kind) ? { end: now() + 0.6 } : {}),
+    choke: "aud",
+  });
 }
 export function auditionSample(id: string) {
   wake();

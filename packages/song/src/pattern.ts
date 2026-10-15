@@ -1,7 +1,7 @@
 // Writing patterns: shared by grooves, variations and the assistant (HANDOFF.md 4.5).
 // Every function here mutates the song it is given (an Immer draft in the app, a plain copy on
 // the server) and throws PatternError with user-facing text when the request can't be applied.
-import { ALIAS, BY_ID, CAT, CAT_DEFAULT, FMAX, FMIN, HIGH, KIT, LOW, NOTE_NAMES, SPB } from "./kit.ts";
+import { ALIAS, CAT, CAT_DEFAULT, FMAX, FMIN, HIGH, KIT, LOW, NOTE_NAMES, SPB, soundOf } from "./kit.ts";
 import { N, clamp, findTrack, makeClip, makeTrack, nid } from "./model.ts";
 import type { Clip, DrumTrack, Note, Song, SoundKind, SynthTrack, Track, TrackType } from "./types.ts";
 
@@ -32,6 +32,7 @@ const SYN: Record<string, SoundKind> = {
   rim: "rim", rims: "rim", rimshot: "rim", "rim shot": "rim", clave: "rim",
   perc: "perc", percussion: "perc", conga: "perc", congas: "perc", bongo: "perc", bongos: "perc", cowbell: "perc",
   tom: "tom", toms: "tom",
+  fx: "fx", riser: "fx", impact: "fx", sweep: "fx",
 }; // prettier-ignore
 
 /** A drum category from loose text ("Hi hats", "open_hat"), or null. */
@@ -43,13 +44,13 @@ export const normCat = (spec: unknown): SoundKind | null =>
       .trim()
   ] ?? null;
 
-/** A sound id from an id, an old alias, a name or a unique-enough part of a name. */
-export function resolveSound(spec: unknown, kind?: SoundKind): string | null {
+/** A sound id from an id, an old alias, a name or a unique-enough part of a name (the song's own sounds included). */
+export function resolveSound(spec: unknown, kind?: SoundKind, song?: Song): string | null {
   const r = String(spec ?? "").trim();
-  if (BY_ID[r]) return r;
+  if (soundOf(song, r)) return r;
   if (ALIAS[r]) return ALIAS[r];
   const low = r.toLowerCase(),
-    pool = KIT.filter((s) => !kind || s.kind === kind);
+    pool = [...(song?.sounds ?? []), ...KIT].filter((s) => !kind || s.kind === kind);
   const hit =
     pool.find((s) => s.id.toLowerCase() === low) ??
     pool.find((s) => s.name.toLowerCase() === low) ??
@@ -69,13 +70,13 @@ export function padsInUse(tr: Track): Set<number> {
  * category (re-pointed at the id if one was given), else an empty pad, else a pad no note uses.
  * Never steals a pad in `taken` or one that notes play.
  */
-export function resolvePad(tr: DrumTrack, spec: unknown, taken: Set<number>): number {
+export function resolvePad(tr: DrumTrack, spec: unknown, taken: Set<number>, song?: Song): number {
   const s = String(spec ?? "");
-  let id: string | null = BY_ID[s] ? s : (ALIAS[s] ?? null);
-  let cat: SoundKind | null = id ? BY_ID[id]!.kind : normCat(spec);
+  let id: string | null = soundOf(song, s) ? s : (ALIAS[s] ?? null);
+  let cat: SoundKind | null = id ? soundOf(song, id)!.kind : normCat(spec);
   if (!id && !cat) {
-    id = resolveSound(spec);
-    if (id) cat = BY_ID[id]!.kind;
+    id = resolveSound(spec, undefined, song);
+    if (id) cat = soundOf(song, id)!.kind;
   }
   if (!cat)
     return fail(
@@ -85,7 +86,7 @@ export function resolvePad(tr: DrumTrack, spec: unknown, taken: Set<number>): nu
     const at = tr.pads.indexOf(id);
     if (at >= 0 && !taken.has(at)) return at;
   }
-  const same = tr.pads.findIndex((p, i) => !taken.has(i) && !!p && BY_ID[p]?.kind === cat);
+  const same = tr.pads.findIndex((p, i) => !taken.has(i) && soundOf(song, p)?.kind === cat);
   if (same >= 0) {
     if (id) tr.pads[same] = id;
     return same;
@@ -241,7 +242,7 @@ export function writeDrums(song: Song, sp: DrumSpec): WriteResult {
     lanes: { pad: number; hits: [number, number][] }[] = [];
   for (const l of sp.lanes as DrumLane[]) {
     const hits = parseSteps(l?.steps, L),
-      pad = resolvePad(tr, l?.sound, taken);
+      pad = resolvePad(tr, l?.sound, taken, song);
     taken.add(pad);
     lanes.push({ pad, hits });
   }
@@ -260,7 +261,7 @@ export function writeDrums(song: Song, sp: DrumSpec): WriteResult {
     `${tr.name} bars ${start + 1}–${start + len} (${loop}-bar pattern): ` +
     lanes
       .map((l) => {
-        const s = BY_ID[tr.pads[l.pad]!]!;
+        const s = soundOf(song, tr.pads[l.pad])!;
         return `${CAT[s.kind].one.toLowerCase()} ${s.name} ×${l.hits.length}`;
       })
       .join(", ");
@@ -284,7 +285,7 @@ export function writeNotes(song: Song, sp: NoteSpec): WriteResult {
   const tr = ensureTrack(song, sp.track, "synth"),
     { start, len, loop, L } = rangeOf(sp);
   if (sp.sound) {
-    const id = resolveSound(sp.sound);
+    const id = resolveSound(sp.sound, undefined, song);
     if (!id) fail(`Unknown sound "${String(sp.sound)}". Use an id from the catalog.`);
     tr.sample = id!;
   }
@@ -299,7 +300,7 @@ export function writeNotes(song: Song, sp: NoteSpec): WriteResult {
   );
   const c = writeClip(tr, start, len, loop, () => notes, sp.name);
   return {
-    summary: `${tr.name} bars ${start + 1}–${start + len} (${loop}-bar pattern): ${notes.length} notes, ${BY_ID[tr.sample]?.name ?? "?"}`,
+    summary: `${tr.name} bars ${start + 1}–${start + len} (${loop}-bar pattern): ${notes.length} notes, ${soundOf(song, tr.sample)?.name ?? "?"}`,
     trackId: tr.id,
     clipId: c.id,
   };
@@ -333,9 +334,9 @@ export function setTrack(song: Song, i: TrackInput): WriteResult {
     did.push("renamed");
   }
   if (i.sound != null && i.sound !== "") {
-    const id = resolveSound(i.sound);
+    const id = resolveSound(i.sound, undefined, song);
     if (!id) fail(`Unknown sound "${String(i.sound)}". Use an id from the catalog.`);
-    const name = BY_ID[id!]!.name;
+    const name = soundOf(song, id)!.name;
     if (tr.type === "synth") {
       tr.sample = id!;
       did.push("sound " + name);
@@ -344,7 +345,7 @@ export function setTrack(song: Song, i: TrackInput): WriteResult {
       tr.pads[p] = id;
       did.push(`pad ${p + 1} ${name}`);
     } else {
-      const p = resolvePad(tr, id, new Set());
+      const p = resolvePad(tr, id, new Set(), song);
       did.push(`pad ${p + 1} ${name}`);
     }
   }

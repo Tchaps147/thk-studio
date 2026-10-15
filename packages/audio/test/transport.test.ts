@@ -100,14 +100,15 @@ describe("SampleBank", () => {
   it("fetches and decodes each sound once, sharing in-flight loads", async () => {
     const fetcher = vi.fn(async (url: string) => new TextEncoder().encode(url).buffer as ArrayBuffer);
     const decoder = { decodeAudioData: vi.fn(async () => ({ duration: 1 }) as AudioBuffer) };
-    const bank = new SampleBank(decoder, "/kit/", fetcher);
+    const render = vi.fn(async () => ({ duration: 1 }) as AudioBuffer);
+    const bank = new SampleBank(decoder, "/kit/", fetcher, render);
     await Promise.all([bank.load("THK_Clap_01_Classic"), bank.load("THK_Clap_01_Classic")]);
     await bank.load("THK_Clap_01_Classic");
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(fetcher).toHaveBeenCalledWith("/kit/THK_Clap_01_Classic.wav");
     expect(bank.has("THK_Clap_01_Classic")).toBe(true);
     await bank.loadKind("clap");
-    expect(bank.size).toBe(8);
+    expect(bank.size).toBe(8 + 2); // 8 kit claps fetched, 2 factory claps rendered
   });
   it("skips unknown ids and remembers failures", async () => {
     const fetcher = vi.fn(async () => {

@@ -1,6 +1,6 @@
 // What plays when (HANDOFF.md 4.3-4.4), without any audio. The audio engine turns these into
 // voices; tests compare them with the prototype's event list.
-import { BY_ID, ROOT, SPB } from "./kit.ts";
+import { ROOT, SPB, soundOf } from "./kit.ts";
 import { audible, songEnd } from "./model.ts";
 import type { Note, Song, Track } from "./types.ts";
 
@@ -66,7 +66,7 @@ export function planStep(song: Song, step: number): StepPlan {
     const v = nt.v ?? 1;
     if (tr.type === "drums") {
       const id = tr.pads[nt.p],
-        smp = id ? BY_ID[id] : undefined;
+        smp = soundOf(song, id);
       if (!id || !smp) continue;
       plan.triggers.push({
         track: tr,
@@ -78,7 +78,7 @@ export function planStep(song: Song, step: number): StepPlan {
       });
       if (smp.kind === "kick" && audible(song, tr))
         for (const o of song.tracks) if (o.type === "synth" && o.duck) plan.ducks.push(o);
-    } else if (BY_ID[tr.sample]) {
+    } else if (soundOf(song, tr.sample)) {
       plan.triggers.push({
         track: tr,
         sample: tr.sample,

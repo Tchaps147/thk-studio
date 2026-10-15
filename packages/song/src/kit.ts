@@ -1,5 +1,6 @@
 import data from "./kit-data.json" with { type: "json" };
-import type { Sound, SoundKind } from "./types.ts";
+import { FACTORY } from "./presets.ts";
+import type { Song, Sound, SoundKind } from "./types.ts";
 
 export const SPB = 16;
 /** Every bass sample is rooted on C2 = MIDI 36. */
@@ -23,13 +24,21 @@ export const CATS: readonly [SoundKind, string, string][] = [
   ["perc", "Perc", "Perc"],
   ["tom", "Toms", "Tom"],
   ["bass", "Bass", "Bass"],
+  ["lead", "Leads", "Lead"],
+  ["pad", "Pads", "Pad"],
+  ["stab", "Stabs", "Stab"],
+  ["pluck", "Plucks", "Pluck"],
+  ["fx", "FX", "FX"],
 ];
+/** Kinds a synth track plays chromatically (the rest are drum pads). */
+export const MELODIC: ReadonlySet<SoundKind> = new Set(["bass", "lead", "pad", "stab", "pluck"]);
 export const CAT = Object.fromEntries(CATS.map(([k, plural, one]) => [k, { plural, one }])) as Record<
   SoundKind,
   { plural: string; one: string }
 >;
 
-export const KIT: readonly Sound[] = data.sounds as Sound[];
+/** Every built-in sound: the rendered kit (assets/) followed by the factory synth presets. */
+export const KIT: readonly Sound[] = [...(data.sounds as Sound[]), ...FACTORY];
 export const BY_ID: Readonly<Record<string, Sound>> = Object.fromEntries(KIT.map((s) => [s.id, s]));
 /** Old sound ids -> current ids. Ids are permanent; renames go through this map. */
 export const ALIAS: Readonly<Record<string, string>> = data.alias;
@@ -54,7 +63,15 @@ export const CAT_DEFAULT: Readonly<Record<SoundKind, string>> = (() => {
 })();
 
 export const sound = (id: string | null | undefined): Sound | undefined => (id ? BY_ID[id] : undefined);
+/** A built-in sound, or one of the song's own sounds. */
+export const soundOf = (song: Song | undefined, id: string | null | undefined): Sound | undefined =>
+  id ? (BY_ID[id] ?? song?.sounds?.find((s) => s.id === id)) : undefined;
+/** Built-in sounds of a kind, then the song's own. */
+export const soundsOfKind = (song: Song | undefined, kind: SoundKind) =>
+  KIT.filter((s) => s.kind === kind).concat((song?.sounds ?? []).filter((s) => s.kind === kind));
 export const sampleNum = (s: Sound) => s.id.split("_")[2] ?? "";
 export const sampleLabel = (s: Sound) =>
-  `${CAT[s.kind].one} ${sampleNum(s)} · ${s.name}` + (s.kind === "kick" ? ` (${s.note})` : "");
+  s.custom
+    ? `${CAT[s.kind].one} · ${s.name} (mine)`
+    : `${CAT[s.kind].one} ${sampleNum(s)} · ${s.name}` + (s.kind === "kick" && s.note ? ` (${s.note})` : "");
 export const soundsOf = (kind: SoundKind) => KIT.filter((s) => s.kind === kind);

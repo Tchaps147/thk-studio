@@ -49,10 +49,11 @@ describe("kit", () => {
   it("matches assets/kit_meta.json and the alias map", () => {
     const meta = JSON.parse(readFileSync(join(ROOT, "assets/kit_meta.json"), "utf8")) as { file: string }[];
     const ids = meta.map((m) => m.file.split("/").pop()!.replace(".wav", "")).sort();
-    expect(KIT.map((s) => s.id).sort()).toEqual(ids);
+    const files = KIT.filter((s) => !s.patch);
+    expect(files.map((s) => s.id).sort()).toEqual(ids);
     expect(ALIAS).toEqual(JSON.parse(readFileSync(join(ROOT, "assets/kit_alias.json"), "utf8")));
-    expect(KIT).toHaveLength(115);
-    expect(KIT.every((s) => s.peaks.length === 60)).toBe(true);
+    expect(files).toHaveLength(115);
+    expect(files.every((s) => s.peaks.length === 60)).toBe(true);
   });
   it("every id the code refers to exists", () => {
     const song = demoSong();
@@ -181,13 +182,15 @@ describe("assistant tools", () => {
   const run = (song: Song, name: string, input: Record<string, unknown>) =>
     (toolByName(name) as EditTool).run(song, input);
 
-  it("has the six tools from the prototype", () => {
+  it("has the prototype's six tools plus the sound tools", () => {
     expect(TOOLS.map((t) => t.name)).toEqual([
       "write_drums",
       "write_notes",
       "set_track",
       "delete_clips",
       "set_song",
+      "design_sound",
+      "edit_sound",
       "offer_variations",
     ]);
     expect(RULES).toContain("Sound catalog\nKicks (kick): THK_Kick_01_Punchy_Tight_F");

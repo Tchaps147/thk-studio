@@ -2,7 +2,7 @@
 // a gesture (live preview, one command on release) or a Try (previewed, committed by Keep).
 import { create } from "zustand";
 import type { Patch } from "immer";
-import { clamp, clipById, trackById, type Song, type SoundKind, type VariationSpec } from "@thk/song";
+import { clamp, clipById, trackById, type Song, type Sound, type SoundKind, type VariationSpec } from "@thk/song";
 import { emptyHistory, push, record, redo as redoH, undo as undoH, type Command, type History } from "./history.ts";
 
 export interface Sel {
@@ -51,6 +51,10 @@ export interface StudioState {
   pending: Pending | null;
   gesture: Gesture | null;
   ui: { tab: SoundKind; ppb: number; cw: number; noteLen: number; follow: boolean };
+  /** The sound maker: the sound being edited (not yet in the song) and whether it is new. */
+  maker: { draft: Sound; isNew: boolean } | null;
+  /** The user's sound library (all songs), kept in localStorage. */
+  library: Sound[];
   playing: boolean;
   toast: { n: number; text: string } | null;
   status: string;
@@ -66,6 +70,8 @@ export const useStudio = create<StudioState>()(() => ({
   pending: null,
   gesture: null,
   ui: { tab: "kick", ppb: 48, cw: 22, noteLen: 2, follow: true },
+  maker: null,
+  library: [],
   playing: false,
   toast: null,
   status: "Autosaves in this browser",

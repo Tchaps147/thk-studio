@@ -1201,3 +1201,124 @@ body {
 .status:empty {
   display: none;
 }
+
+/* ---------- sound maker ---------- */
+.maker .ed-row input.maker-name {
+  width: 200px;
+  background: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 6px;
+}
+.maker-view {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.maker-wave {
+  width: 100%;
+  height: 64px;
+  display: block;
+  background: var(--lane);
+  border-radius: 4px;
+}
+.maker-keys {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+}
+.mkey {
+  flex: 1 0 22px;
+  min-width: 22px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 0 0 3px 3px;
+  background: var(--pad);
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3px;
+  color: var(--ink-soft);
+}
+.mkey.black {
+  background: var(--ink);
+  color: var(--panel);
+  height: 34px;
+}
+.mkey.on {
+  border-color: var(--led);
+  box-shadow: inset 0 -3px 0 var(--led);
+}
+.maker-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.maker-group {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  margin: 0;
+  padding: 6px 10px 8px;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.maker-group legend {
+  padding: 0 4px;
+}
+.mrow {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 58px;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+.mrow input[type="range"] {
+  width: 100%;
+  accent-color: var(--led);
+}
+.mrow select {
+  grid-column: 2 / span 2;
+  background: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3px 4px;
+}
+.mrow input[type="checkbox"] {
+  justify-self: start;
+  accent-color: var(--led);
+}
+.mval {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.maker-ask input {
+  flex: 1 1 260px;
+  min-width: 0;
+  background: var(--pad);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+.browser .new-sound {
+  margin-left: auto;
+}
+.item .acts2 {
+  display: grid;
+  gap: 4px;
+}
+.item .use.edit {
+  font-size: 11px;
+}
+.mine {
+  padding: 4px 12px 0;
+}

@@ -6,3 +6,6 @@ export * from "./grooves.ts";
 export * from "./events.ts";
 export * from "./export.ts";
 export * from "./assistant.ts";
+export * from "./patch.ts";
+export * from "./presets.ts";
+export * from "./sounds.ts";

@@ -5,6 +5,7 @@ import { Assistant } from "./components/Assistant.tsx";
 import { Browser } from "./components/Browser.tsx";
 import { Dialog, Toast, type DialogKind } from "./components/Dialogs.tsx";
 import { Editor } from "./components/Editor.tsx";
+import { SoundMaker } from "./components/SoundMaker.tsx";
 import { TopBar } from "./components/TopBar.tsx";
 import { deleteClip, duplicateClip, toggleLoop } from "./lib/actions.ts";
 import { seek, togglePlay } from "./lib/audio.ts";
@@ -57,6 +58,7 @@ export function App() {
         <Browser />
         <main className="work">
           <Arrangement />
+          <SoundMaker />
           <Editor />
         </main>
         <Assistant />

@@ -1,4 +1,4 @@
-import { BY_ID } from "./kit.ts";
+import { soundOf } from "./kit.ts";
 import { pname, type Random } from "./model.ts";
 import { lanesOf, writeDrums, writeNotes, type DrumLane, type WriteResult } from "./pattern.ts";
 import type { Clip, Song, Track } from "./types.ts";
@@ -114,7 +114,7 @@ export function kickElsewhere(song: Song, tr: Track, c: Clip): boolean {
         (k) =>
           k.start < c.start + c.len &&
           c.start < k.start + k.len &&
-          k.notes.some((n) => BY_ID[t.pads[n.p] ?? ""]?.kind === "kick"),
+          k.notes.some((n) => soundOf(song, t.pads[n.p])?.kind === "kick"),
       ),
   );
 }
@@ -125,7 +125,7 @@ export function kickElsewhere(song: Song, tr: Track, c: Clip): boolean {
  */
 export function localVariations(song: Song, tr: Track, c: Clip, random: Random = Math.random): VariationSpec[] {
   if (tr.type === "drums") {
-    const kickLane = lanesOf(c).find((l) => BY_ID[tr.pads[l.pad] ?? ""]?.kind === "kick"),
+    const kickLane = lanesOf(c).find((l) => soundOf(song, tr.pads[l.pad])?.kind === "kick"),
       other = !kickLane && kickElsewhere(song, tr, c);
     return shuffled(
       DRUM_GROOVES.filter((g) => g.lanes.kick && g.bars <= 2 && Object.keys(g.lanes).length > 1),

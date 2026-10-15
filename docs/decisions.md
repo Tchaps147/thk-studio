@@ -82,6 +82,18 @@ path, so the browser replays edits identically. Anthropic allows subscription si
 owner's own use: before anyone else uses the app, set `ANTHROPIC_API_KEY` (or `THK_ASSISTANT=api`)
 and the server switches to the API path (D13-D14).
 
+`strictMcpConfig: true` keeps the SDK to the studio server. Without it the Claude Code CLI behind
+the SDK also loads the account's claude.ai connectors (Gmail, Drive, Docs, Higgsfield: 173 tools,
+~343 KB of schemas). They finish loading in the background, so from the second turn on every request
+carried them, plus their server instructions. The kick request ("four-to-the-floor kick on a new
+track called Groove, bars 1-4") cost 4 input + 38,758 cache read + 153,963 cache write (~193k
+tokens) before and 4 + 16,629 + 856 (~17.5k) after. That is the same tool call and the same kind of
+reply. The rest is the SDK's minimum: a one-line SDK preamble, an environment note (working
+directory, model, date) and the account email. Each of the two turns resends ~8k tokens of rules,
+catalog, song and tools, read from cache. `tools: []`, `settingSources: []`, a plain-string
+`systemPrompt` and `persistSession: false` were already set. `--bare` would cut the rest, but it
+skips subscription sign-in, so it isn't used.
+
 **D15. Running it.** `pnpm dev` (tools/dev.mjs) starts the API on :5191 and Vite on :5190, which
 proxies `/api`. The key comes from `ANTHROPIC_API_KEY` or `.env.local` (git-ignored; see
 `.env.example`). Node runs the API's TypeScript directly (`--experimental-strip-types`), which is why
@@ -91,8 +103,39 @@ still works when the API has no key.
 **Not done for Phase 3 yet:** `mix_check` and `set_macros` (they need Phase 2's mix engine), streaming
 the reply as it is written, and accounts (the rate limit is per IP).
 
+## Sounds: the sound maker (requested before Phase 2)
+
+**D17. Sounds can be synth settings instead of recordings.** A `Patch` (packages/song/src/patch.ts)
+describes a sound: two oscillators with unison, sub, noise, FM, a pitch drop, a filter with its own
+envelope, an amp envelope, drive, and a length; or, with the sample engine, a kit sound trimmed,
+reversed, pitched, filtered and enveloped. `packages/audio/src/synth.ts` renders a patch to a mono
+sample in the browser (deterministic, seeded noise, peak-normalized to -1 dBFS). One parameter table
+(`PARAMS`) drives clamping, the sound maker's knobs and the assistant's tool schema.
+
+**D18. HANDOFF section 6 still holds.** A rendered patch is just a sample: melodic sounds are rooted on
+C2 and synth tracks still play one sample chromatically; drum pads play them as one-shots. Export and
+the parity tests are unchanged. The AI still only edits structured data: it sets synth parameters,
+it never generates audio.
+
+**D19. More sounds.** 52 factory presets (presets.ts) with permanent ids add five browser tabs (Leads,
+Pads, Stabs, Plucks, FX) and extra basses and drums. They render on first use; there are no new
+files. Only ever append presets.
+
+**D20. Where the user's sounds live.** In `song.sounds` (so a song is self-contained and every
+change is undoable) and in a "My sounds" library in localStorage that follows the user across songs.
+Ids come from the sound's name (`user_rubber_acid`), so the server's tool run and the browser's replay
+agree. Built-in sounds never change: editing one makes a copy.
+
+**D21. The assistant makes and edits sounds** with `design_sound` (instrument, optional starting
+sound, only the settings that matter, optionally onto a track or pad) and `edit_sound` (the song's own
+sounds). The sound maker's "Describe it" box sends the same request through the chat.
+
 ## Open items for the product owner
 
 - HANDOFF.md section 9 questions are unchanged (pricing, reference sounds, platforms, name).
 - Compressed playback format (D9) needs a decision after measurement.
+- Recording and uploading audio for AI editing (requested next): HANDOFF lists audio recording as a
+  non-goal and principle 1 says the AI never generates audio. Needs a decision on what "AI-edited
+  audio" means before building (e.g. AI chops, pitches and arranges the recording through tools, versus
+  AI rendering new audio).
 - CI on GitHub (github.com/Tchaps147/thk-studio): check the Actions tab after each push; the strict kit check and the browser tests have only run on macOS so far.

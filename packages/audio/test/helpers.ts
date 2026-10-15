@@ -48,7 +48,7 @@ export function kitBuffers(): BufferLookup {
     const meta = JSON.parse(readFileSync(join(ROOT, "assets/kit_meta.json"), "utf8")) as { file: string }[];
     const file = new Map(meta.map((m) => [m.file.split("/").pop()!.replace(".wav", ""), m.file]));
     const map = new Map<string, AudioBuffer>();
-    for (const s of KIT) {
+    for (const s of KIT.filter((x) => !x.patch)) {
       const { rate, samples } = readWav(readFileSync(join(ROOT, "assets/TechHouse_Synth_Kit", file.get(s.id)!)));
       const b = ctx.createBuffer(1, samples.length, rate);
       b.copyToChannel(samples, 0);

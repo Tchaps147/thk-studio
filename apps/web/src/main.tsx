@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
-import { boot, scheduleSave } from "./lib/actions.ts";
+import { boot, loadLibrary, scheduleSave, syncLibrary } from "./lib/actions.ts";
 import { audio, startAudio, wake } from "./lib/audio.ts";
 import { buildExport } from "./lib/export.ts";
 import * as song from "@thk/song";
@@ -14,8 +14,10 @@ import "./styles.css";
 boot();
 startAudio();
 startPlayheadLoop();
+loadLibrary();
 useStudio.subscribe((s, prev) => {
   if (s.song !== prev.song) scheduleSave(s.song);
+  if (s.song.sounds !== prev.song.sounds) syncLibrary(s.song.sounds);
 });
 document.addEventListener("pointerdown", wake, { capture: true });
 addMsg({

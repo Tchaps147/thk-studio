@@ -1,5 +1,5 @@
 // Export encoders (HANDOFF.md 4.8): WAV, MIDI and an uncompressed zip. Pure byte builders.
-import { BY_ID, SPB } from "./kit.ts";
+import { SPB, soundOf } from "./kit.ts";
 import { clamp, songEnd } from "./model.ts";
 import type { Song } from "./types.ts";
 
@@ -191,8 +191,8 @@ export function exportReadme(song: Song): string {
     song.tracks
       .map((t) =>
         t.type === "synth"
-          ? `\n${t.name}: ${BY_ID[t.sample]?.name ?? "?"}`
-          : `\n${t.name}: ` + t.pads.map((p, i) => `pad ${i + 1} ${(p && BY_ID[p]?.name) || "-"}`).join(", "),
+          ? `\n${t.name}: ${soundOf(song, t.sample)?.name ?? "?"}`
+          : `\n${t.name}: ` + t.pads.map((p, i) => `pad ${i + 1} ${soundOf(song, p)?.name || "-"}`).join(", "),
       )
       .join("")
   );

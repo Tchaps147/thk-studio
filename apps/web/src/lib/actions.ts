@@ -1,6 +1,13 @@
 // What the UI and the assistant do to the song. Each action is one undoable edit.
 import {
-  BY_ID,
+  CAT,
+  customSoundId,
+  instrumentPatch,
+  saveSound,
+  soundOf,
+  startingPatch,
+  type Patch,
+  type Sound,
   NOTE_NAMES,
   SPB,
   applyGroove,
@@ -210,12 +217,13 @@ export function clearBars(tid: string, a: number, b: number) {
 export function assign(id: string) {
   const { sel, song } = get(),
     tr = trackById(song, sel.tid),
-    s = BY_ID[id];
+    s = soundOf(get().song, id) ?? get().library.find((x) => x.id === id);
   if (!tr || !s) {
     toast("Select a track first.");
     return;
   }
   edit("Change sound", (d) => {
+    if (s.custom && !soundOf(d, id)) saveSound(d, s); // a library sound joins the song
     const t = findIn(d, tr.id)!;
     if (t.type === "synth") t.sample = id;
     else t.pads[sel.row] = id;
@@ -238,7 +246,7 @@ export function setSynthSound(tid: string, id: string) {
   });
   const tr = trackById(get().song, tid);
   if (tr) {
-    toast(`${tr.name} now plays ${BY_ID[id]?.name ?? id}`);
+    toast(`${tr.name} now plays ${soundOf(get().song, id)?.name ?? id}`);
     auditionNote(tr, 41);
   }
 }
@@ -359,3 +367,82 @@ export function revertVariation(gid: string) {
   updateGroup(gid, { tried: null });
 }
 export type { VariationSpec, SoundKind };
+
+// ---------- the sound maker and the user's library ----------
+export const LIBRARY_KEY = "thk-studio-sounds-v1";
+export function loadLibrary() {
+  try {
+    const raw = localStorage.getItem(LIBRARY_KEY);
+    const list: unknown = raw ? JSON.parse(raw) : [];
+    setState({ library: Array.isArray(list) ? (list as Sound[]).filter((s) => s && s.id && s.patch) : [] });
+  } catch {
+    /* no storage: the library is empty */
+  }
+}
+/** Adds or updates the song's own sounds in the library (called whenever the song's sounds change). */
+export function syncLibrary(sounds: Sound[] | undefined) {
+  const fresh = (sounds ?? []).filter((s) => s.custom && s.patch);
+  if (!fresh.length) return;
+  const ids = new Set(fresh.map((s) => s.id));
+  const library = [...get().library.filter((x) => !ids.has(x.id)), ...fresh.map((s) => ({ ...s, peaks: [] }))];
+  setState({ library });
+  try {
+    localStorage.setItem(LIBRARY_KEY, JSON.stringify(library));
+  } catch {
+    /* storage full or blocked: the sound still lives in the song */
+  }
+}
+
+/** Opens the sound maker on a new sound of a kind, or on a copy of an existing sound. */
+export function openMaker(kind: SoundKind, from?: Sound) {
+  const song = get().song;
+  const patch = from ? startingPatch(song, from.kind, from.id) : instrumentPatch(kind);
+  const isOwn = !!from?.custom;
+  const name = from ? (isOwn ? from.name : `${from.name} copy`) : `My ${CAT[kind].one.toLowerCase()}`;
+  const draft: Sound = {
+    id: isOwn ? from!.id : "draft",
+    kind: from?.kind ?? kind,
+    name,
+    note: "",
+    hz: 0,
+    dur: patch.length,
+    peaks: [],
+    patch,
+    custom: true,
+  };
+  setState({ maker: { draft, isNew: !isOwn } });
+}
+export function updateDraft(p: Partial<Sound> & { patch?: Patch }) {
+  const m = get().maker;
+  if (m) setState({ maker: { ...m, draft: { ...m.draft, ...p, dur: (p.patch ?? m.draft.patch)!.length } } });
+}
+export function closeMaker() {
+  setState({ maker: null });
+  void audio().bank.loadSong(get().song); // drop any live preview of an edited sound
+}
+
+/**
+ * Saves the draft into the song (one undo step) and the library. With `use`, also puts it on the
+ * selected synth track or drum pad. Returns the saved sound's id.
+ */
+export function saveDraft(use: boolean): string | null {
+  const m = get().maker;
+  if (!m) return null;
+  const { sel, song } = get();
+  const id = m.isNew ? customSoundId(song, m.draft.name) : m.draft.id;
+  const s: Sound = { ...m.draft, id, custom: true, peaks: [] };
+  const tr = use ? trackById(song, sel.tid) : undefined;
+  edit(m.isNew ? `New sound “${s.name}”` : `Edit sound “${s.name}”`, (d) => {
+    saveSound(d, s);
+    const t = tr && findIn(d, tr.id);
+    if (t?.type === "synth") t.sample = id;
+    else if (t?.type === "drums") t.pads[sel.row] = id;
+  });
+  setState({ maker: { draft: soundOf(get().song, id)!, isNew: false } });
+  toast(
+    tr
+      ? `Saved “${s.name}” and put it on ${tr.name}${tr.type === "drums" ? ` pad ${sel.row + 1}` : ""}.`
+      : `Saved “${s.name}” to this song and My sounds.`,
+  );
+  return id;
+}

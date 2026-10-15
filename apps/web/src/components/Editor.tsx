@@ -1,7 +1,6 @@
 import { useRef, type PointerEvent as RPE } from "react";
 import {
   BASS_GROOVES,
-  BY_ID,
   CATS,
   DRUM_GROOVES,
   FMAX,
@@ -9,11 +8,13 @@ import {
   HIGH,
   KIT,
   LOW,
+  MELODIC,
   N,
   SPB,
   clamp,
   clipById,
   sampleLabel,
+  soundOf,
   trackById,
   type Clip,
   type Note,
@@ -96,7 +97,10 @@ export function SoundSelect(props: {
   label: string;
   bassFirst?: boolean;
 }) {
-  const order = props.bassFirst ? [CATS[CATS.length - 1]!, ...CATS.slice(0, -1)] : CATS;
+  const song = useStudio((s) => s.song);
+  const melodicFirst = (k: string) => (MELODIC.has(k as never) ? 0 : 1);
+  const order = props.bassFirst ? [...CATS].sort((a, b) => melodicFirst(a[0]) - melodicFirst(b[0])) : CATS;
+  const own = song.sounds ?? [];
   return (
     <select
       aria-label={props.label}
@@ -104,6 +108,15 @@ export function SoundSelect(props: {
       onChange={(e) => e.target.value && props.onChange(e.target.value)}
     >
       {!props.value && <option value="">(empty)</option>}
+      {own.length > 0 && (
+        <optgroup label="My sounds">
+          {own.map((k) => (
+            <option key={k.id} value={k.id}>
+              {sampleLabel(k)}
+            </option>
+          ))}
+        </optgroup>
+      )}
       {order.map(([kind, title]) => (
         <optgroup key={kind} label={title}>
           {KIT.filter((k) => k.kind === kind).map((k) => (
@@ -544,7 +557,11 @@ function PianoRoll({ tr, c }: { tr: Track; c: Clip }) {
                 <div
                   key={i}
                   className={"note" + (n.v < 0.8 ? " soft" : "")}
-                  title={drums ? (BY_ID[tr.type === "drums" ? (tr.pads[n.p] ?? "") : ""]?.name ?? "") : pname(n.p)}
+                  title={
+                    drums
+                      ? (soundOf(useStudio.getState().song, tr.type === "drums" ? tr.pads[n.p] : null)?.name ?? "")
+                      : pname(n.p)
+                  }
                   style={{
                     left: n.t * cw,
                     top: (drums ? n.p : HIGH - n.p) * rh,

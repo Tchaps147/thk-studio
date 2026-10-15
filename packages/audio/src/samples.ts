@@ -1,27 +1,37 @@
-// Sample loading: fetched from /kit (later a CDN), decoded lazily and cached in memory.
-import { BY_ID, KIT, type Song, type SoundKind } from "@thk/song";
+// Sample loading: kit sounds are fetched from /kit (later a CDN) and decoded; patch sounds (factory
+// presets and the user's own) are rendered. Everything is lazy and cached in memory; a patch
+// re-renders when its settings change.
+import { KIT, patchHash, soundOf, type Song, type Sound, type SoundKind } from "@thk/song";
 import type { BufferLookup } from "./engine.ts";
+import { renderPatch, type RenderPatchOptions } from "./synth.ts";
 
 export interface Decoder {
   decodeAudioData(data: ArrayBuffer): Promise<AudioBuffer>;
 }
 export type Fetcher = (url: string) => Promise<ArrayBuffer>;
+export type PatchRenderer = (sound: Sound, opts: RenderPatchOptions) => Promise<AudioBuffer>;
 
 const defaultFetch: Fetcher = async (url) => {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${url}: ${r.status}`);
   return r.arrayBuffer();
 };
+const defaultRender: PatchRenderer = (s, opts) => renderPatch(s.patch!, opts);
 
 export class SampleBank implements BufferLookup {
   private readonly buffers = new Map<string, AudioBuffer>();
+  /** Patch hash each rendered buffer was made from. */
+  private readonly rendered = new Map<string, string>();
   private readonly pending = new Map<string, Promise<AudioBuffer | undefined>>();
   private readonly failed = new Set<string>();
+  private readonly listeners = new Set<(id: string) => void>();
 
   constructor(
     private readonly decoder: Decoder,
     private readonly baseUrl = "/kit/",
     private readonly fetcher: Fetcher = defaultFetch,
+    private readonly render: PatchRenderer = defaultRender,
+    private readonly renderOptions: RenderPatchOptions = {},
   ) {}
 
   get(id: string) {
@@ -33,40 +43,68 @@ export class SampleBank implements BufferLookup {
   get size() {
     return this.buffers.size;
   }
+  /** Called whenever a sound finishes loading or rendering. */
+  onLoad(fn: (id: string) => void) {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
+  }
 
-  /** Loads one sound (once); resolves undefined if it can't be fetched or decoded. */
-  load(id: string): Promise<AudioBuffer | undefined> {
-    const have = this.buffers.get(id);
-    if (have) return Promise.resolve(have);
-    let p = this.pending.get(id);
-    if (!p) {
-      if (!BY_ID[id] || this.failed.has(id)) return Promise.resolve(undefined);
-      p = this.fetcher(this.baseUrl + id + ".wav")
-        .then((data) => this.decoder.decodeAudioData(data))
-        .then((b) => {
-          this.buffers.set(id, b);
-          return b;
-        })
-        .catch(() => {
-          this.failed.add(id);
-          return undefined;
-        })
-        .finally(() => this.pending.delete(id));
-      this.pending.set(id, p);
-    }
+  /** Loads one sound (once); resolves undefined if it can't be fetched, decoded or rendered. */
+  load(id: string, song?: Song): Promise<AudioBuffer | undefined> {
+    const s = soundOf(song, id);
+    if (!s) return Promise.resolve(undefined);
+    return this.loadSound(s, song);
+  }
+
+  /** Loads a sound object directly: the sound maker's unsaved draft, or a song's own sound. */
+  loadSound(s: Sound, song?: Song): Promise<AudioBuffer | undefined> {
+    const hash = s.patch ? patchHash(s.patch) : "file";
+    const have = this.buffers.get(s.id);
+    if (have && this.rendered.get(s.id) === hash) return Promise.resolve(have);
+    const key = s.id + ":" + hash;
+    let p = this.pending.get(key);
+    if (p) return p;
+    if (!s.patch && this.failed.has(s.id)) return Promise.resolve(undefined);
+    p = (
+      s.patch
+        ? this.renderSound(s, song)
+        : this.fetcher(this.baseUrl + s.id + ".wav").then((d) => this.decoder.decodeAudioData(d))
+    )
+      .then((b) => {
+        this.buffers.set(s.id, b);
+        this.rendered.set(s.id, hash);
+        this.listeners.forEach((f) => f(s.id));
+        return b;
+      })
+      .catch(() => {
+        if (!s.patch) this.failed.add(s.id);
+        return undefined;
+      })
+      .finally(() => this.pending.delete(key));
+    this.pending.set(key, p);
     return p;
   }
 
-  loadAll(ids: Iterable<string | null | undefined>) {
-    const uniq = [...new Set([...ids].filter((x): x is string => !!x))];
-    return Promise.all(uniq.map((id) => this.load(id)));
+  private async renderSound(s: Sound, song?: Song): Promise<AudioBuffer> {
+    const src = s.patch!.engine === "sample" && s.patch!.source ? await this.load(s.patch!.source, song) : undefined;
+    return this.render(s, { ...this.renderOptions, ...(src ? { source: src } : {}) });
   }
-  loadKind(kind: SoundKind) {
-    return this.loadAll(KIT.filter((s) => s.kind === kind).map((s) => s.id));
+
+  loadAll(ids: Iterable<string | null | undefined>, song?: Song) {
+    const uniq = [...new Set([...ids].filter((x): x is string => !!x))];
+    return Promise.all(uniq.map((id) => this.load(id, song)));
+  }
+  loadKind(kind: SoundKind, song?: Song) {
+    return this.loadAll(
+      KIT.filter((s) => s.kind === kind)
+        .map((s) => s.id)
+        .concat((song?.sounds ?? []).filter((s) => s.kind === kind).map((s) => s.id)),
+      song,
+    );
   }
   /** Every sound a song can play: all pads of drum tracks and each synth track's sample. */
   loadSong(song: Song) {
-    return this.loadAll(soundsUsed(song));
+    return this.loadAll(soundsUsed(song), song);
   }
 }
 

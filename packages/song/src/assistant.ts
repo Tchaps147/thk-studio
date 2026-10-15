@@ -1,6 +1,6 @@
 // The assistant's contract (HANDOFF.md 4.7): rules text, catalog, song state text and the six
 // tools. Pure, so the Phase 3 server can run the same tool loop against a copy of the song.
-import { BY_ID, CATS, KIT, NOTE_NAMES, SPB } from "./kit.ts";
+import { CATS, KIT, NOTE_NAMES, SPB, soundOf } from "./kit.ts";
 import { clipById, pname, songEnd, trackById } from "./model.ts";
 import {
   PatternError,
@@ -15,6 +15,8 @@ import {
   type WriteResult,
 } from "./pattern.ts";
 import { applyVariation, type VariationSpec } from "./grooves.ts";
+import { INSTRUMENTS, PARAMS, isBool, isEnum } from "./patch.ts";
+import { addSound, editSound } from "./sounds.ts";
 import type { Song } from "./types.ts";
 
 export const CATALOG = CATS.map(
@@ -39,6 +41,12 @@ Rules
 - When the user asks to see, hear or compare options or variations, call offer_variations with complete alternatives (3 unless told otherwise) instead of writing them. The user loops each one in place and keeps one, so never also write them yourself.
 - set_track changes sounds and mix; set_song changes tempo, key and swing.
 
+Making sounds
+- When no sound in the catalog fits what the user describes ("a bass that isn't in the app", "a darker pad", "a squelchy acid lead"), make one with design_sound: pick the instrument, optionally start_from the closest catalog sound, and set only the settings that matter. Put it on a track or pad with track (and pad) when the user wants to hear it in the song.
+- Melodic sounds are rooted on C2: keep tune at 0 for them unless asked, so notes stay in key. Drums can use tune freely.
+- edit_sound changes one of the song's own sounds (listed in the song state). Built-in sounds never change; to tweak one, design_sound with start_from it.
+- Settings guide: darker = lower cutoff; brighter = higher cutoff; plucky = short filter decay with filter env 2-5; squelchy/acid = resonance 8-15 with filter env; fatter = sub, unison or a detuned osc 2; punchier = shorter attack and decay; gritty = drive 0.4+; longer = bigger length and release; metallic = FM amount 3+.
+
 Sound catalog
 ${CATALOG}`;
 
@@ -55,13 +63,20 @@ export function stateText(song: Song, sel?: Selection): string {
   const st = trackById(song, sel?.tid),
     sc = clipById(st, sel?.cid);
   if (st) L.push(`Selected: ${st.name}${sc ? `, clip bars ${sc.start + 1}-${sc.start + sc.len}` : ""}.`);
+  if (song.sounds?.length)
+    L.push(
+      "The song's own sounds (editable with edit_sound): " +
+        song.sounds.map((x) => `${x.id} (${x.kind}, "${x.name}")`).join(", "),
+    );
   L.push("Tracks:");
   song.tracks.forEach((t, i) => {
     const mix = `vol ${t.vol.toFixed(2)}${t.mute ? ", muted" : ""}${t.solo ? ", solo" : ""}${t.cutoff < 19000 ? `, filter ${t.cutoff} Hz` : ""}${t.send ? `, reverb ${Math.round(t.send * 100)}%` : ""}`;
     if (t.type === "drums")
       L.push(
         `${i + 1}. "${t.name}" (drums; ${mix}). Pads: ` +
-          t.pads.map((p, j) => (p && BY_ID[p] ? `${j + 1}=${BY_ID[p].kind}:${p}` : `${j + 1}=empty`)).join(", "),
+          t.pads
+            .map((p, j) => (soundOf(song, p) ? `${j + 1}=${soundOf(song, p)!.kind}:${p}` : `${j + 1}=empty`))
+            .join(", "),
       );
     else
       L.push(
@@ -75,7 +90,7 @@ export function stateText(song: Song, sel?: Selection): string {
         const lanes = lanesOf(c).sort((a, b) => a.pad - b.pad);
         for (const l of lanes)
           L.push(
-            `     pad ${l.pad + 1} ${BY_ID[t.pads[l.pad] ?? ""]?.kind ?? "?"}: ${(l.steps.match(/.{1,16}/g) ?? []).join(" ")}`,
+            `     pad ${l.pad + 1} ${soundOf(song, t.pads[l.pad])?.kind ?? "?"}: ${(l.steps.match(/.{1,16}/g) ?? []).join(" ")}`,
           );
         if (!lanes.length) L.push("     (empty)");
       } else {
@@ -224,6 +239,43 @@ export const TOOLS: readonly AssistantTool[] = [
     run: (song, i) => ({ summary: setSong(song, i as SongInput), trackId: "" }),
   },
   {
+    name: "design_sound",
+    kind: "edit",
+    description:
+      "Make a new sound with the synth (or by reshaping a catalog sound) and add it to the song. Optionally put it on a track: a synth track plays it, a drum track gets it on a pad. Returns the new sound's id.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Short name, e.g. Rubber Acid Bass." },
+        instrument: { type: "string", enum: INSTRUMENTS.map((x) => x.kind), description: "What kind of sound it is." },
+        start_from: {
+          type: "string",
+          description: "Optional catalog sound id to start from (a synth preset, or a kit sample to reshape).",
+        },
+        settings: settingsSchema(),
+        track: S_TRACK,
+        pad: { type: "integer", minimum: 1, maximum: 8, description: "Drum track pad 1-8 (optional)." },
+      },
+      required: ["name", "instrument"],
+    },
+    run: (song, i) => addSound(song, i),
+  },
+  {
+    name: "edit_sound",
+    kind: "edit",
+    description: "Change the settings (or name) of one of the song's own sounds. Every track using it updates.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sound: { type: "string", description: "The sound's id or name." },
+        settings: settingsSchema(),
+        rename: { type: "string" },
+      },
+      required: ["sound", "settings"],
+    },
+    run: (song, i) => editSound(song, i),
+  },
+  {
     name: "offer_variations",
     kind: "offer",
     description:
@@ -250,6 +302,28 @@ export const TOOLS: readonly AssistantTool[] = [
 ];
 
 export const toolByName = (name: string) => TOOLS.find((t) => t.name === name);
+
+/** The sound settings as a JSON Schema object, from the same table the sound maker's knobs use. */
+function settingsSchema(): Schema {
+  const properties: Record<string, unknown> = {};
+  for (const p of PARAMS) {
+    if (p.key === "source") continue;
+    if (isEnum(p)) properties[p.key] = { type: "string", enum: [...p.options], description: p.help };
+    else if (isBool(p)) properties[p.key] = { type: "boolean", description: p.help };
+    else
+      properties[p.key] = {
+        type: "number",
+        minimum: p.min,
+        maximum: p.max,
+        description: p.help + (p.unit ? ` (${p.unit})` : ""),
+      };
+  }
+  return {
+    type: "object",
+    properties,
+    description: "Only the settings to change; everything else keeps its starting value.",
+  };
+}
 
 /** offer_variations input -> specs (at most 6). Throws PatternError when empty. */
 export function parseVariations(input: Input): { title: string; specs: VariationSpec[] } {

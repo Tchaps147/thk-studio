@@ -1,0 +1,758 @@
+{
+  "source": "https://github.com/sfzinstruments/karoryfer.shinyguitar",
+  "commit": "57243cca85277dbcc120ce17c6178032f93c80f3",
+  "author": "D. Smolken / Karoryfer Samples",
+  "license": "CC0-1.0",
+  "instruments": [
+    {
+      "id": "THK_RecordedGuitar_01_Acoustic",
+      "kind": "guitar",
+      "name": "Recorded Acoustic Guitar",
+      "description": "Real archtop guitar recorded with a microphone. Soft and hard picks with alternating takes.",
+      "sampleMap": [
+        {
+          "root": 37,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_37_v2_rr1",
+            "GTR_Acoustic_37_v2_rr2"
+          ]
+        },
+        {
+          "root": 37,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_37_v4_rr1",
+            "GTR_Acoustic_37_v4_rr2"
+          ]
+        },
+        {
+          "root": 42,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_42_v2_rr1",
+            "GTR_Acoustic_42_v2_rr2"
+          ]
+        },
+        {
+          "root": 42,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_42_v4_rr1",
+            "GTR_Acoustic_42_v4_rr2"
+          ]
+        },
+        {
+          "root": 48,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_48_v2_rr1",
+            "GTR_Acoustic_48_v2_rr2"
+          ]
+        },
+        {
+          "root": 48,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_48_v4_rr1",
+            "GTR_Acoustic_48_v4_rr2"
+          ]
+        },
+        {
+          "root": 54,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_54_v2_rr1",
+            "GTR_Acoustic_54_v2_rr2"
+          ]
+        },
+        {
+          "root": 54,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_54_v4_rr1",
+            "GTR_Acoustic_54_v4_rr2"
+          ]
+        },
+        {
+          "root": 60,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_60_v2_rr1",
+            "GTR_Acoustic_60_v2_rr2"
+          ]
+        },
+        {
+          "root": 60,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_60_v4_rr1",
+            "GTR_Acoustic_60_v4_rr2"
+          ]
+        },
+        {
+          "root": 66,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_66_v2_rr1",
+            "GTR_Acoustic_66_v2_rr2"
+          ]
+        },
+        {
+          "root": 66,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_66_v4_rr1",
+            "GTR_Acoustic_66_v4_rr2"
+          ]
+        },
+        {
+          "root": 72,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Acoustic_72_v2_rr1",
+            "GTR_Acoustic_72_v2_rr2"
+          ]
+        },
+        {
+          "root": 72,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Acoustic_72_v4_rr1",
+            "GTR_Acoustic_72_v4_rr2"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "root": 37,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/db2_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_37_v2_rr1",
+          "sourceSha256": "0b1f528c6239f55acbab08da6e4995f5d63ab6760f2071c0a242b72fd4998f4a",
+          "sha256": "31b97ec18a600ca1ae79e77a180a730e1e4af5ec3327fdf47fe614e9dfc94d0e"
+        },
+        {
+          "root": 37,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/db2_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_37_v2_rr2",
+          "sourceSha256": "9992b8528f4311682f1bc41ed015bab32a39c2e656ccbcd1f76cb9440eae6468",
+          "sha256": "cd442651eff563b78e4d6c5b784d76fa3950e6f1d87d4defb092f4c49b8b8ffd"
+        },
+        {
+          "root": 37,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/db2_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_37_v4_rr1",
+          "sourceSha256": "9fb5c2773fa21c39a9c6f7367349c628a50a515fe1d47030f0db37a38951a871",
+          "sha256": "05c288115cb819971d71cd8e4114fdb05cd17c5522893acf8520b64aa2210a20"
+        },
+        {
+          "root": 37,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/db2_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_37_v4_rr2",
+          "sourceSha256": "4bf6c6beee659d7f1f7e1a348a96d44e4d878a94294e082817b6fa53d6ce0c42",
+          "sha256": "9ae1c104e565b2764111ccfb1b318297ac698f06becebb3c515f18cd7b07f319"
+        },
+        {
+          "root": 42,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/gb2_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_42_v2_rr1",
+          "sourceSha256": "9522cbb09acd8d71ad123d0ba061fc9dbd1100fceb3718e7317fa50cb17282b7",
+          "sha256": "ecb7acf108751861336978743eb29920946adccd56407688f9785e4932105794"
+        },
+        {
+          "root": 42,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/gb2_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_42_v2_rr2",
+          "sourceSha256": "ebf5374137a5f85b30f2da88903c55d95767abd5bfb8ce91aa9b4cdb4df4b62f",
+          "sha256": "8bca823f5b375310da355aefddfc7f2980fd8d8a0fd219932650bb72aefaa343"
+        },
+        {
+          "root": 42,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/gb2_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_42_v4_rr1",
+          "sourceSha256": "f4508f07fc7aa77d0bb8d2edde88a55b5d07acfdeb36cc54f6b1c05af6615785",
+          "sha256": "50ee57263e68a0f3bd127d2c3b7d2ff49eb3b644c767e15f9336d10a061d4cdf"
+        },
+        {
+          "root": 42,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/gb2_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_42_v4_rr2",
+          "sourceSha256": "0b7fd8c3e19f01b17890a40ca8354868b3c2111860c0bc34489506e54296f50e",
+          "sha256": "063d64c5f4925fc469edbbac821d24cddca31a44d85b5452e2d3a3226d66eba1"
+        },
+        {
+          "root": 48,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/c3_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_48_v2_rr1",
+          "sourceSha256": "8cd5e5abce0542de03502f58e987281b94151e638f96b66be69c28ad8a83a9dc",
+          "sha256": "0a45821e3bb02d4b5a1556f2fd54fc5313b72a275785bcbb7f3256d315ea429a"
+        },
+        {
+          "root": 48,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/c3_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_48_v2_rr2",
+          "sourceSha256": "22f21d680e22b6c6a2fe116b96d9a67ef6e47653f02c4d737559a5a42c646fd2",
+          "sha256": "1c0c7bd5174ec8a2d3b65a21efd6b68c4bde52c6160385cabb2e87975d05c7e3"
+        },
+        {
+          "root": 48,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/c3_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_48_v4_rr1",
+          "sourceSha256": "e8a8b01b6d9fb465f32cbfa4627383bc870f89111537a2bd7370796453c30b51",
+          "sha256": "aa809350fb5e007430250627d2abe3acef9f521756f2ebcb1f09b3cc68e4319c"
+        },
+        {
+          "root": 48,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/c3_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_48_v4_rr2",
+          "sourceSha256": "4a45b15dc242c64e2301f4776a0cee9a074ecc014901b0894e5e052738fca01e",
+          "sha256": "a5caa26b67546819fb8eb677598aa9b86cf8270517e120e086cdb78ad365acab"
+        },
+        {
+          "root": 54,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/gb3_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_54_v2_rr1",
+          "sourceSha256": "43194873c7eddc291b93e2c15453996cc27994bd7b2a68181dabea08812d6193",
+          "sha256": "1bdf51cc872adb0f6b88224a767fd34ee49fffb328a9a6026e8b1e2ff2d96e4e"
+        },
+        {
+          "root": 54,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/gb3_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_54_v2_rr2",
+          "sourceSha256": "3ff0487142f3d6fed26ed38f2c0ed6f93189059a96cac3a5728a04c9149623c9",
+          "sha256": "dbeb41ce172da6b4ef5cefac908b0f68ff0c497d558b2257be3d6fe17f47b384"
+        },
+        {
+          "root": 54,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/gb3_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_54_v4_rr1",
+          "sourceSha256": "1895a1d27b5144868b8cb305fe68cdbef057e38d599e9d2e64d6672d3648423b",
+          "sha256": "d11bc75246913fc36c175db35836dd77c962383cd8a526c31aa765d67d8309cc"
+        },
+        {
+          "root": 54,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/gb3_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_54_v4_rr2",
+          "sourceSha256": "1c8f996f3872cd9b71a504628ddbd998c5d1d218e58312095ade1f75eefd8061",
+          "sha256": "4673d585cb32ff6262f89f0170d4ebc5fe473079e38d654aa93d3159b8d987a6"
+        },
+        {
+          "root": 60,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/c4_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_60_v2_rr1",
+          "sourceSha256": "6b3d07ff68144d4f5d5ac42350e5c4250f625c4a2e909fc19ae9d4e944d80eb1",
+          "sha256": "64f6d309651ed99452be70046d0b8c23be147ce7162339d1a1db9b43dac40282"
+        },
+        {
+          "root": 60,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/c4_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_60_v2_rr2",
+          "sourceSha256": "ded240d243450450d654d1f1f54abc2dd20f2f51a5d770b2794c09a3702498ec",
+          "sha256": "aacfca1491887f5fa00e4da1bcb74168690af43c1c11937fb51928f72b331dfa"
+        },
+        {
+          "root": 60,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/c4_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_60_v4_rr1",
+          "sourceSha256": "713db2d000c5adb612b6e7898112f1f1f83f961842f01fe4382fef9810d36c8d",
+          "sha256": "9640a7d81694d7d2067e280c8ca6e5aa664aeee465c561eb8dc673a48da75ff2"
+        },
+        {
+          "root": 60,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/c4_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_60_v4_rr2",
+          "sourceSha256": "d10028bd2c293837a873db56fe25ff7ef858871987c2ffc005d75e50768c32b3",
+          "sha256": "5e8bd29d4f1963e1be931c6892aa426b89cd88c933cf6f2ab0975e13635b2691"
+        },
+        {
+          "root": 66,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/gb4_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_66_v2_rr1",
+          "sourceSha256": "55b558cf9f2a29a7a48ba4d93c98000dab4f7af8168940942bf811c92eb39195",
+          "sha256": "fdfb9f0d3722fb4c2e65d8b6337a7f532f0b4cc5ac3fe4c3aea9edf89ac2e9d3"
+        },
+        {
+          "root": 66,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/gb4_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_66_v2_rr2",
+          "sourceSha256": "478086039090a8b1a24153b546d650b9f9698d51b0a6b5ab2d1b44a4043bc6d6",
+          "sha256": "63d41c941d03fa40f5dc590286f842bdf7e1fea77b56012532a8bf8cf6c12630"
+        },
+        {
+          "root": 66,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/gb4_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_66_v4_rr1",
+          "sourceSha256": "8888486aeb89d2ac0a92d6a8184a837fd5b48b10f0cd8ff9e0b8b1c3fc7c7803",
+          "sha256": "b0c64ac7b7cea489dbb8d39acbcc270708e89fc07cd7a86ad950e0c3f070741b"
+        },
+        {
+          "root": 66,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/gb4_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_66_v4_rr2",
+          "sourceSha256": "331d9cf1764df9443ee883cb3e218b6d54bc02ddce2c40452240ca1247d72f68",
+          "sha256": "837d02dab32dd27c8c718e260a0f5c281a7cc2bde432908bc3aafbbd4f7dae67"
+        },
+        {
+          "root": 72,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/acoustic/c5_vl2_rr1_1.wav",
+          "file": "GTR_Acoustic_72_v2_rr1",
+          "sourceSha256": "84051ad0042396b83a72f2341c58238f46ba2c28b9ea4ec1cd8db45e1e132a53",
+          "sha256": "969edecbe559caeac44fa67933ad42de2e399a52c933613be3501787b7d8a5a7"
+        },
+        {
+          "root": 72,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/acoustic/c5_vl2_rr2_1.wav",
+          "file": "GTR_Acoustic_72_v2_rr2",
+          "sourceSha256": "3e9c39cb2a58cc5e40ad7a754ce883adaa4d58562d33e2fece6635cb9a6b74f3",
+          "sha256": "c86bb0abb59a99a72b66690bb449e01595ab8586920bc2808ecd8a8c73cd172b"
+        },
+        {
+          "root": 72,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/acoustic/c5_vl4_rr1_1.wav",
+          "file": "GTR_Acoustic_72_v4_rr1",
+          "sourceSha256": "6865f50da674c7ca0fabf04c26ff4f5358fa17e6fcef8878dbe416e9cae3fd5f",
+          "sha256": "430a574b1311c28e12b2e7f6974f8963f2f43231211366f324d601f14d9ae24f"
+        },
+        {
+          "root": 72,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/acoustic/c5_vl4_rr2_1.wav",
+          "file": "GTR_Acoustic_72_v4_rr2",
+          "sourceSha256": "ce90b89b41fc488bfd674797466b758667ef63bc4cd0d7d8fcc4ed7670414a31",
+          "sha256": "94d527de073f3132faef5300be15fba46f84c35ee10a2e44db28397f4362e35f"
+        }
+      ],
+      "referenceSha256": "c833858641f36dc64ab763d160d4968482d8e7516cd03c4d9946a272638935bc"
+    },
+    {
+      "id": "THK_RecordedGuitar_02_Electric",
+      "kind": "guitar",
+      "name": "Recorded Electric Guitar",
+      "description": "Real guitar recorded from its electric pickup. Clean, unamped tone with soft and hard picks and alternating takes.",
+      "sampleMap": [
+        {
+          "root": 37,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_37_v2_rr1",
+            "GTR_Electric_37_v2_rr2"
+          ]
+        },
+        {
+          "root": 37,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_37_v4_rr1",
+            "GTR_Electric_37_v4_rr2"
+          ]
+        },
+        {
+          "root": 42,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_42_v2_rr1",
+            "GTR_Electric_42_v2_rr2"
+          ]
+        },
+        {
+          "root": 42,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_42_v4_rr1",
+            "GTR_Electric_42_v4_rr2"
+          ]
+        },
+        {
+          "root": 48,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_48_v2_rr1",
+            "GTR_Electric_48_v2_rr2"
+          ]
+        },
+        {
+          "root": 48,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_48_v4_rr1",
+            "GTR_Electric_48_v4_rr2"
+          ]
+        },
+        {
+          "root": 54,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_54_v2_rr1",
+            "GTR_Electric_54_v2_rr2"
+          ]
+        },
+        {
+          "root": 54,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_54_v4_rr1",
+            "GTR_Electric_54_v4_rr2"
+          ]
+        },
+        {
+          "root": 60,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_60_v2_rr1",
+            "GTR_Electric_60_v2_rr2"
+          ]
+        },
+        {
+          "root": 60,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_60_v4_rr1",
+            "GTR_Electric_60_v4_rr2"
+          ]
+        },
+        {
+          "root": 66,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_66_v2_rr1",
+            "GTR_Electric_66_v2_rr2"
+          ]
+        },
+        {
+          "root": 66,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_66_v4_rr1",
+            "GTR_Electric_66_v4_rr2"
+          ]
+        },
+        {
+          "root": 72,
+          "maxVelocity": 0.65,
+          "files": [
+            "GTR_Electric_72_v2_rr1",
+            "GTR_Electric_72_v2_rr2"
+          ]
+        },
+        {
+          "root": 72,
+          "maxVelocity": 1,
+          "files": [
+            "GTR_Electric_72_v4_rr1",
+            "GTR_Electric_72_v4_rr2"
+          ]
+        }
+      ],
+      "files": [
+        {
+          "root": 37,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/db2_vl2_rr1_2.wav",
+          "file": "GTR_Electric_37_v2_rr1",
+          "sourceSha256": "df674f434b4fef4dd91f510f338175911d0669fff169a7d7279b01255c8e1a61",
+          "sha256": "ae951abc5fc4522e219a0b4754718d5b656fab90b8568bedf2d84c4a853c51cb"
+        },
+        {
+          "root": 37,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/db2_vl2_rr2_2.wav",
+          "file": "GTR_Electric_37_v2_rr2",
+          "sourceSha256": "4556a1e877e07651a474b30e891b3bfbaa4d7b9b05488f8c5871a82d1c27a4df",
+          "sha256": "882f78c6e32e68694a675ef282d4ebfaf7d7807914d0a4d5cffaf0a40c1cfd67"
+        },
+        {
+          "root": 37,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/db2_vl4_rr1_2.wav",
+          "file": "GTR_Electric_37_v4_rr1",
+          "sourceSha256": "19b9f0f684f3e31694a3869898a76010cf94592ebe0d2dec911ff15aa1756b68",
+          "sha256": "625e7e9087de5697d90af3e5bd70fcb88732785aa8fe4ace2d8475fa6300b106"
+        },
+        {
+          "root": 37,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/db2_vl4_rr2_2.wav",
+          "file": "GTR_Electric_37_v4_rr2",
+          "sourceSha256": "8a733d20e41a3f73a50a0d2813738d8c4ccbe6f7355aa0a1edf5a81b0d2d8c91",
+          "sha256": "1a56daf63329e40dcef5c4753b2b2448f4fdb80484da0300b3a91982790e6db3"
+        },
+        {
+          "root": 42,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/gb2_vl2_rr1_2.wav",
+          "file": "GTR_Electric_42_v2_rr1",
+          "sourceSha256": "7b5881779fd00ebe73f43d9699b39ce8f44ccf6df9debfaf63aad4f51a984e88",
+          "sha256": "5d34bd1ac4b5d47267a37adc1864862e07f2ce2880e87da80cc7636a0faa41cd"
+        },
+        {
+          "root": 42,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/gb2_vl2_rr2_2.wav",
+          "file": "GTR_Electric_42_v2_rr2",
+          "sourceSha256": "c56896ae774b81bca77aec7227e0169bc594f18b9ccf0389a061d71f9ab30345",
+          "sha256": "e5868d08ea795260cc7bfbbcb0476fd344f85364ba186c1350b53add933f639c"
+        },
+        {
+          "root": 42,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/gb2_vl4_rr1_2.wav",
+          "file": "GTR_Electric_42_v4_rr1",
+          "sourceSha256": "338ff37625b35fce7cb64dd194c11bd4fab3e9e1f8189974f96da9ef62fece0c",
+          "sha256": "1c3cd675c1e8e197c79579115b163d89576032d84c79ab638445c5cf46324a14"
+        },
+        {
+          "root": 42,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/gb2_vl4_rr2_2.wav",
+          "file": "GTR_Electric_42_v4_rr2",
+          "sourceSha256": "c750b94bfb0507bedf55adba7546f56fee05e193298f97949ccb1012e0f71b1d",
+          "sha256": "4d33b3638d332510483774966841dae20e496c7b4ecac96226bed3fbb8d244ba"
+        },
+        {
+          "root": 48,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/c3_vl2_rr1_2.wav",
+          "file": "GTR_Electric_48_v2_rr1",
+          "sourceSha256": "308a4a5c1f2b52edcd8175013f55d848c047512c2959911219f80324747e3815",
+          "sha256": "ec7ad5d5d51c5893449f27861082b4169db8660b3423031004c3bec7ae0d0b71"
+        },
+        {
+          "root": 48,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/c3_vl2_rr2_2.wav",
+          "file": "GTR_Electric_48_v2_rr2",
+          "sourceSha256": "b204ba0b48d93c74ca14b191b98034c8146f167806343f012c4bb30a58af4634",
+          "sha256": "e62d1c66a9f1b5fe6086f9c9dcf093fb2c1fb8b863f4cf70d646d9983ab5bdee"
+        },
+        {
+          "root": 48,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/c3_vl4_rr1_2.wav",
+          "file": "GTR_Electric_48_v4_rr1",
+          "sourceSha256": "74cd4e656ac61c631c9b3a5f51ab39a20cb5dab73ab1d55c492addc90d8cd386",
+          "sha256": "50255f416dfd83ea3e7d491749038ebbaf7d2b65e115e4d8c8cf8ae4a86ff091"
+        },
+        {
+          "root": 48,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/c3_vl4_rr2_2.wav",
+          "file": "GTR_Electric_48_v4_rr2",
+          "sourceSha256": "8609392f662e47fab2acf9e8af304fdb30aff1082e4d9d549ed6fd960e279c62",
+          "sha256": "9ddd59311ec9040ba66aa56774719ba7c5e7b9c32814f960b11b653b6a6518b7"
+        },
+        {
+          "root": 54,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/gb3_vl2_rr1_2.wav",
+          "file": "GTR_Electric_54_v2_rr1",
+          "sourceSha256": "8c41913a3a4cd38655951bdc22693e20b2fb6dda7cfc474340080c512ee976be",
+          "sha256": "2de4464113ea7be8cba5c010b8d2d8de83f3a32b66207f1f619159b221157525"
+        },
+        {
+          "root": 54,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/gb3_vl2_rr2_2.wav",
+          "file": "GTR_Electric_54_v2_rr2",
+          "sourceSha256": "e752349c53bbf3ce222f80bda4f6f92ed62aa0b996241bc89bc30c8de66dc604",
+          "sha256": "7360337f0d48a826b7f2e6469f80825f8a27dbc032404de3805af18f056811ec"
+        },
+        {
+          "root": 54,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/gb3_vl4_rr1_2.wav",
+          "file": "GTR_Electric_54_v4_rr1",
+          "sourceSha256": "851ae50f8a44630ccfb7da684b0c1b0a004e224660d0dd5ee7a93d44a9d82101",
+          "sha256": "459db1571b72340bd64b880a555cd56feae54d76b4268eed684d291fcd70a9c4"
+        },
+        {
+          "root": 54,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/gb3_vl4_rr2_2.wav",
+          "file": "GTR_Electric_54_v4_rr2",
+          "sourceSha256": "bc2fcdf22628032edfe7c7ba0946733bbd60de79238d1c46ed1b4365cd6e1e88",
+          "sha256": "de3c74d5318bfd391786b89aef18a645dbc3bc276deba0fe9df62f0d88df560b"
+        },
+        {
+          "root": 60,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/c4_vl2_rr1_2.wav",
+          "file": "GTR_Electric_60_v2_rr1",
+          "sourceSha256": "6db27d6e02a62dc05a504830417803a0ccda0a4e8a6c3efa118c010998f3dfc0",
+          "sha256": "9a033d9a1d0a4e7bd7557a33ff255dd1e7cd6662061d04b3a3ce5240d733cf44"
+        },
+        {
+          "root": 60,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/c4_vl2_rr2_2.wav",
+          "file": "GTR_Electric_60_v2_rr2",
+          "sourceSha256": "3cd45cf8b8a5bb946e36a47a0bcd70bc53f09c1dd5d37b48fd24f89070bffbd1",
+          "sha256": "d4a161f699a63c6ee11190bf606d926c66cd4bcd0adddf393cc72d7b863be365"
+        },
+        {
+          "root": 60,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/c4_vl4_rr1_2.wav",
+          "file": "GTR_Electric_60_v4_rr1",
+          "sourceSha256": "cd6e454520d8233d761f683d03b3781a3b78613548cbd5f58d247397620aa28c",
+          "sha256": "eeb3adfddaa6da3207e3ea41affa9a2089956cd2a88f2e1b9d05c03a77fa3225"
+        },
+        {
+          "root": 60,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/c4_vl4_rr2_2.wav",
+          "file": "GTR_Electric_60_v4_rr2",
+          "sourceSha256": "051b729904310bb4a02d9d3feec0d72d0f8a37bf306d797e905c483786dd307d",
+          "sha256": "67d52293a78ae4e9b98bc38879fddae7e2000e4fdac6a8c7427e9a40491bc484"
+        },
+        {
+          "root": 66,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/gb4_vl2_rr1_2.wav",
+          "file": "GTR_Electric_66_v2_rr1",
+          "sourceSha256": "30a02f078df72e0738fc3e09d10ee91f04e1f4001bc7b47a123e03a028af8a9d",
+          "sha256": "6dae8b34dfe746d0d87cd77482b48ef0ac1e2f893c893a42871bdcde6360a0a1"
+        },
+        {
+          "root": 66,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/gb4_vl2_rr2_2.wav",
+          "file": "GTR_Electric_66_v2_rr2",
+          "sourceSha256": "ca8ee42d97c8e901caa9d71a096d9e1fb6fbdd3710de316db4d1f079e6b4f7c4",
+          "sha256": "12253d2b2c762b17b7dad27300d3fdb01b87a11f8fbbbf8a47ae006c34a5fd31"
+        },
+        {
+          "root": 66,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/gb4_vl4_rr1_2.wav",
+          "file": "GTR_Electric_66_v4_rr1",
+          "sourceSha256": "a87a12487171af9d433035beefc111648493477844a1daeb58b73a7d86a19fe1",
+          "sha256": "0455353bf60c53280341f7e0dea86444c3f05bdaead4d7d7a61e5f9dabc05ad0"
+        },
+        {
+          "root": 66,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/gb4_vl4_rr2_2.wav",
+          "file": "GTR_Electric_66_v4_rr2",
+          "sourceSha256": "9ff2c67c9cbfc829b681ce37f3460ec57ed41941a255a565c8be2debc47f4171",
+          "sha256": "feb7691317c7d90321ed6de6ccf48b9d7b5d74c9fcae9d905433728b5d6a6462"
+        },
+        {
+          "root": 72,
+          "velocity": 2,
+          "take": 1,
+          "source": "Samples/electric/c5_vl2_rr1_2.wav",
+          "file": "GTR_Electric_72_v2_rr1",
+          "sourceSha256": "4e4f0f1a68b8b2f140e2a1fb19d2d714656b2bd41978b62b9fa57684ac65185e",
+          "sha256": "a4d90872deb60c7bb47d14e0e1a4d53f6fe60ebd85be168ffbdad169254e16bb"
+        },
+        {
+          "root": 72,
+          "velocity": 2,
+          "take": 2,
+          "source": "Samples/electric/c5_vl2_rr2_2.wav",
+          "file": "GTR_Electric_72_v2_rr2",
+          "sourceSha256": "ca40723b6e573cd256dbacf340296950d12a0934277f22169bb126147fdd3354",
+          "sha256": "e1f06c39a596b39b0330a07d42e650f08df06aa3b306f0d0f90a8b7fd67fd624"
+        },
+        {
+          "root": 72,
+          "velocity": 4,
+          "take": 1,
+          "source": "Samples/electric/c5_vl4_rr1_2.wav",
+          "file": "GTR_Electric_72_v4_rr1",
+          "sourceSha256": "db75033480258a0ca18e2f120facb110b7c6c6dd5390ea875220cacd2d26d024",
+          "sha256": "e0823040ac8b0bfc3aaf50d9805b9ff3b721dc7a2d1d19dbb346b0d1563c957b"
+        },
+        {
+          "root": 72,
+          "velocity": 4,
+          "take": 2,
+          "source": "Samples/electric/c5_vl4_rr2_2.wav",
+          "file": "GTR_Electric_72_v4_rr2",
+          "sourceSha256": "ddc6270e4f64ea21e612f09f8ee2879e159e6b82d7e169b4bf583b1c2e54170c",
+          "sha256": "1c5b0a21ce3f8e50e16e5bd686cccf521769e901eff81ab9a1dc8945734aed96"
+        }
+      ],
+      "referenceSha256": "31129cc14462cd63488654af10b51a45d4c0472d6979e4f634d2470b27706b61"
+    }
+  ]
+}

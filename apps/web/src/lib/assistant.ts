@@ -2,7 +2,7 @@
 // loop on a copy of the song and returns the edits that succeeded; they are replayed here through
 // the same tools as one undo step. Inside claude.ai (and in the ported prototype tests) the
 // artifact runtime's `sample` capability can drive the tools directly instead.
-import type { AssistantResponse, Tier } from "@thk/api";
+import type { AssistantProvider, AssistantResponse, Tier } from "@thk/api";
 import {
   OFFER_RESULT,
   RULES,
@@ -57,7 +57,7 @@ let abort: AbortController | null = null;
 const chatTurns: ChatTurn[] = [];
 
 const NO_KEY =
-  "The assistant needs an Anthropic API key. Put ANTHROPIC_API_KEY=… in .env.local in the project folder, then restart the studio. Groove presets and 3 variations in the piano roll work without it.";
+  "Connect your personal ChatGPT account with `codex login`, or your Claude account with `claude auth login`, then reconnect. Groove presets and 3 variations work without AI.";
 const NO_SERVER =
   "The assistant's server isn't running. Start the studio with `corepack pnpm dev` (it starts both). Groove presets and 3 variations still work.";
 const NO_EDIT = "This view can't let the assistant edit the song. Groove presets and 3 variations still work.";
@@ -69,16 +69,25 @@ function disable(note?: string) {
 
 /** Picks the backend: the API when it has a key, else the claude.ai runtime, else explains what's missing. */
 export async function initAssistant() {
-  let status: { configured?: boolean } | null = null;
+  type Status = {
+    configured?: boolean;
+    defaultProvider?: AssistantProvider;
+    providers?: { chatgpt?: { configured: boolean } };
+  };
+  let status: Status | null = null;
   try {
     const r = await fetch("/api/assistant/status");
-    status = r.ok ? ((await r.json()) as { configured?: boolean }) : null;
+    status = r.ok ? ((await r.json()) as Status) : null;
   } catch {
     status = null;
   }
   if (status?.configured) {
     backend = { kind: "api" };
-    setState((s) => ({ ai: { ...s.ai, available: true } }));
+    const saved = localStorage.getItem("thk-assistant-provider");
+    const provider =
+      saved === "auto" || saved === "claude" || saved === "chatgpt" ? saved : (status.defaultProvider ?? "auto");
+    const chatgptReady = !!status.providers?.chatgpt?.configured;
+    setState((s) => ({ ai: { ...s.ai, available: true, api: true, provider, chatgptReady } }));
     return;
   }
   const rt = (window as unknown as { claude?: ClaudeRuntime }).claude;
@@ -98,9 +107,16 @@ export async function initAssistant() {
   disable(status ? NO_KEY : NO_SERVER);
 }
 
+export function setAssistantProvider(provider: AssistantProvider) {
+  if (get().ai.busy) return;
+  localStorage.setItem("thk-assistant-provider", provider);
+  setState((s) => ({ ai: { ...s.ai, provider } }));
+}
+
 interface CodedError {
   code?: string;
   text?: string;
+  provider?: string;
 }
 function errorCopy(e: CodedError | undefined): string {
   switch (e?.code) {
@@ -108,11 +124,17 @@ function errorCopy(e: CodedError | undefined): string {
       return "Stopped.";
     case "not_configured":
       disable(NO_KEY);
-      return "No API key on the server.";
+      return "Connect an assistant account, then reconnect.";
     case "auth":
       return "Anthropic rejected the API key. Check ANTHROPIC_API_KEY in .env.local, then restart the studio.";
     case "not_signed_in":
       return "Sign in to your Claude account first: run `claude auth login` in Terminal, then ask again.";
+    case "chatgpt_not_installed":
+      return "Install the Codex CLI, then run `codex login` to connect your ChatGPT account. Choose Claude while setting it up.";
+    case "chatgpt_not_signed_in":
+      return "Run `codex login` in Terminal and sign in with ChatGPT, then click Reconnect.";
+    case "provider_timeout":
+      return "The assistant took too long. Try a smaller request or choose the other assistant.";
     case "not_granted":
     case "sampling_disabled":
     case "not_declared":
@@ -126,15 +148,15 @@ function errorCopy(e: CodedError | undefined): string {
       disable(NO_EDIT);
       return "Editing isn't available here.";
     case "rate_limited":
-      return "Claude is busy or you've reached a usage limit. Try again in a little while.";
+      return "The assistant is busy or you've reached a usage limit. Choose the other assistant or try again later.";
     case "refused":
-      return "Claude declined that request. Try asking another way.";
+      return "The assistant declined that request. Try asking another way.";
     case "prompt_too_large":
       return "The song is too big to send in one go. Ask about fewer tracks or bars.";
     case "empty_completion":
       return "No answer came back. Try rephrasing.";
     default:
-      return "The connection to Claude dropped. Try again.";
+      return "The assistant connection dropped. Try again or choose the other assistant.";
   }
 }
 
@@ -190,11 +212,20 @@ async function viaApi(text: string, tier: string, botId: string, turn: Turn, sig
   const res = await fetch("/api/assistant", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ song, sel, request: text, history: chatTurns.slice(-8), tier: tier as Tier }),
+    body: JSON.stringify({
+      song,
+      sel,
+      request: text,
+      history: chatTurns.slice(-8),
+      tier: tier as Tier,
+      provider: get().ai.provider,
+    }),
     signal,
   });
   if (!res.ok) throw (await res.json().catch(() => ({}))) as CodedError;
   const out = (await res.json()) as AssistantResponse;
+  if (out.provider) updateMsg(botId, { who: out.provider === "chatgpt" ? "ChatGPT" : "Claude" });
+  if (out.fallback) action(botId, { text: "Claude was unavailable. ChatGPT handled this request." });
   let edit = 0,
     offer = 0;
   for (const step of out.steps) {

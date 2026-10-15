@@ -49,7 +49,7 @@ describe("kit", () => {
   it("matches assets/kit_meta.json and the alias map", () => {
     const meta = JSON.parse(readFileSync(join(ROOT, "assets/kit_meta.json"), "utf8")) as { file: string }[];
     const ids = meta.map((m) => m.file.split("/").pop()!.replace(".wav", "")).sort();
-    const files = KIT.filter((s) => !s.patch);
+    const files = KIT.filter((s) => !s.patch && !s.sampleMap && !s.recording);
     expect(files.map((s) => s.id).sort()).toEqual(ids);
     expect(ALIAS).toEqual(JSON.parse(readFileSync(join(ROOT, "assets/kit_alias.json"), "utf8")));
     expect(files).toHaveLength(115);

@@ -1,11 +1,39 @@
 // Renders a sound patch (packages/song/src/patch.ts) to a mono sample on an OfflineAudioContext.
 // Melodic sounds are rooted on C2 like the kit's basses, so tracks play them chromatically.
 // Rendering is deterministic: noise comes from a seeded generator.
-import type { Patch } from "@thk/song";
+import { CHORD_VOICINGS, type Patch } from "@thk/song";
 import type { OfflineFactory } from "./render.ts";
 
 export const C2 = 65.406;
 const SR = 44100;
+// Vowel resonances (Hz, bandwidth Hz, relative level), for synthetic chops rather than speech.
+const FORMANTS = {
+  ah: [
+    [730, 100, 1],
+    [1090, 110, 0.65],
+    [2440, 170, 0.3],
+  ],
+  eh: [
+    [530, 80, 1],
+    [1840, 120, 0.55],
+    [2480, 170, 0.25],
+  ],
+  ee: [
+    [270, 65, 1],
+    [2290, 120, 0.65],
+    [3010, 180, 0.3],
+  ],
+  oh: [
+    [570, 90, 1],
+    [840, 100, 0.6],
+    [2410, 170, 0.2],
+  ],
+  oo: [
+    [300, 70, 1],
+    [870, 100, 0.45],
+    [2240, 160, 0.15],
+  ],
+} as const;
 const WAVE: Record<Patch["osc1Wave"], OscillatorType> = {
   sine: "sine",
   triangle: "triangle",
@@ -102,8 +130,13 @@ export async function renderPatch(p: Patch, o: RenderPatchOptions = {}): Promise
     }
   } else {
     const voices = Math.max(1, Math.round(p.unison));
-    const oscs: [Patch["osc1Wave"], number, number][] = [[p.osc1Wave, p.osc1Level, 0]];
-    if (p.osc2Level > 0) oscs.push([p.osc2Wave, p.osc2Level, p.osc2Semi + p.osc2Detune / 100]);
+    const intervals = CHORD_VOICINGS[p.chord ?? "none"];
+    const oscs: [Patch["osc1Wave"], number, number][] = [];
+    for (const interval of intervals) {
+      const gain = 1 / Math.sqrt(intervals.length);
+      oscs.push([p.osc1Wave, p.osc1Level * gain, interval]);
+      if (p.osc2Level > 0) oscs.push([p.osc2Wave, p.osc2Level * gain, interval + p.osc2Semi + p.osc2Detune / 100]);
+    }
     for (const [wave, level, semis] of oscs) {
       if (level <= 0) continue;
       for (let v = 0; v < voices; v++) {
@@ -118,6 +151,10 @@ export async function renderPatch(p: Patch, o: RenderPatchOptions = {}): Promise
           mod.type = "sine";
           pitchAt(freq * p.fmRatio, mod.frequency);
           depth.gain.value = p.fmAmount * freq;
+          if (p.fmDecay && p.fmDecay > 0) {
+            depth.gain.setValueAtTime(p.fmAmount * freq, 0);
+            depth.gain.setTargetAtTime(0, 0, Math.max(0.001, p.fmDecay / 4));
+          }
           mod.connect(depth);
           depth.connect(osc.frequency);
           mod.start(0);
@@ -169,7 +206,19 @@ export async function renderPatch(p: Patch, o: RenderPatchOptions = {}): Promise
   const amp = ctx.createGain();
   adsr(amp.gain, 0, 1, p.sustain, p.attack, p.decay, Math.min(p.release, len / 2), len);
 
-  mix.connect(filter);
+  if (p.engine === "synth" && p.vowel && p.vowel !== "off") {
+    for (const [hz, bandwidth, level] of FORMANTS[p.vowel]) {
+      const formant = ctx.createBiquadFilter();
+      formant.type = "bandpass";
+      formant.frequency.value = Math.min(hz, sr / 2 - 100);
+      formant.Q.value = hz / bandwidth;
+      const gain = ctx.createGain();
+      gain.gain.value = level;
+      mix.connect(formant);
+      formant.connect(gain);
+      gain.connect(filter);
+    }
+  } else mix.connect(filter);
   filter.connect(shaper);
   shaper.connect(amp);
   amp.connect(ctx.destination);

@@ -53,7 +53,7 @@ export function readWav(buf) {
 }
 
 /** 16-bit mono WAV, rounding like soundfile's PCM_16 writer (scale by 32768, clip). */
-function writeWav16(samples, rate) {
+export function writeWav16(samples, rate) {
   const n = samples.length,
     dv = new DataView(new ArrayBuffer(44 + n * 2));
   const str = (o, s) => [...s].forEach((c, i) => dv.setUint8(o + i, c.charCodeAt(0)));
@@ -92,7 +92,7 @@ function peaks(samples, bins = 60) {
   return out;
 }
 
-function main() {
+async function main() {
   const check = process.argv.includes("--check");
   const meta = JSON.parse(readFileSync(join(ASSETS, "kit_meta.json"), "utf8"));
   const alias = JSON.parse(readFileSync(join(ASSETS, "kit_alias.json"), "utf8"));
@@ -119,10 +119,18 @@ function main() {
       process.exit(1);
     }
     console.log(`kit-data.json matches assets (${sounds.length} sounds)`);
+    const { prepareGuitars } = await import("./guitar-web.mjs");
+    prepareGuitars(true);
+    const { prepareRecordedLibrary } = await import("./recorded-library-web.mjs");
+    prepareRecordedLibrary(true);
     return;
   }
   writeFileSync(DATA_OUT, json);
   console.log(`${sounds.length} sounds -> packages/song/src/kit-data.json, apps/web/public/kit/`);
+  const { prepareGuitars } = await import("./guitar-web.mjs");
+  prepareGuitars(false);
+  const { prepareRecordedLibrary } = await import("./recorded-library-web.mjs");
+  prepareRecordedLibrary(false);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();

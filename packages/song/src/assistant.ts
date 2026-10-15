@@ -15,15 +15,24 @@ import {
   type WriteResult,
 } from "./pattern.ts";
 import { applyVariation, type VariationSpec } from "./grooves.ts";
-import { INSTRUMENTS, PARAMS, isBool, isEnum } from "./patch.ts";
+import { CHORD_VOICINGS, INSTRUMENTS, PARAMS, isBool, isEnum } from "./patch.ts";
+import { chordFamilyLabel } from "./chords.ts";
 import { addSound, editSound } from "./sounds.ts";
 import type { Song } from "./types.ts";
 
 export const CATALOG = CATS.map(
   ([k, plural]) =>
-    `${plural} (${k}): ${KIT.filter((s) => s.kind === k)
-      .map((s) => s.id)
-      .join(", ")}`,
+    `${plural} (${k}): ${
+      KIT.filter((s) => s.kind === k)
+        .map((s) =>
+          s.kind === "chord" && s.family
+            ? `${s.id} [${chordFamilyLabel(s.family)}; ${s.patch?.chord}; ${s.description ?? ""}]`
+            : s.description
+              ? `${s.id} [${s.description}]`
+              : s.id,
+        )
+        .join(", ") || "No factory presets yet; design_sound can create one."
+    }`,
 ).join("\n");
 
 export const RULES = `You are the arranging assistant built into THK Studio, a browser groovebox for tech house. The user asks you to build and change their song. You change the song only by calling the page tools; then reply in one to three short plain sentences saying what you did (tracks, bars, sounds). No markdown headings, lists or tables.
@@ -33,6 +42,8 @@ How the song works
 - Drum tracks have 8 pads, each holding one sound. Write drums as lanes: a sound plus a steps string with one character per 16th: x = hit, o = soft hit, - = rest, length pattern_bars x 16 (a space between bars is fine). Four-to-the-floor: x---x---x---x---. Offbeat open hat: --x---x---x---x-. Clap on 2 and 4: ----x-------x---.
 - Synth tracks play one sample chromatically. Notes are names like F2 or C#3 (C2 = 65 Hz); step is 0-based within the pattern, len is in 16ths. Tech house bass usually sits between C1 and C3, mostly in the gaps between kicks (steps 2, 3, 6, 7, 10, 11, 14, 15) with lengths of 1 or 2. Stay in the song key unless asked; minor keys suit tech house.
 - Sounds: a category (kick, clap, snare, closed hat, open hat, ride, shaker, rim, perc, tom) or an exact sound id from the catalog. Choose ids when the user describes a character ("dark hats", "tight clap", "acid bass").
+- For realistic acoustic or clean electric guitar, use recorded entries such as THK_RecordedGuitar_01_Acoustic or THK_RecordedGuitar_02_Electric. These use actual recorded picks. Write guitar parts around C3-C5, use varied soft/hard notes, and offset chord notes slightly for strums.
+- The catalog also includes recorded grand/upright pianos, FM keyboards, organs, basses, nylon/steel guitars, mallets, strings, brass, drums and vocal phrases. Prefer those when the user requests real instruments. For guitar/piano chords use a synth track with mono false so notes can overlap. Recorded vocal phrases are untimed one-shots: put them on drum pads to preserve their original speed and let the whole phrase play; they do not automatically stretch to the song BPM. Only the explicitly synthesized guitar presets are synth interpretations.
 
 Rules
 - Only change what was asked. write_drums keeps the other lanes of an existing pattern unless replace is true, so "add hats" means sending only the hat lanes.
@@ -43,6 +54,14 @@ Rules
 
 Making sounds
 - When no sound in the catalog fits what the user describes ("a bass that isn't in the app", "a darker pad", "a squelchy acid lead"), make one with design_sound: pick the instrument, optionally start_from the closest catalog sound, and set only the settings that matter. Put it on a track or pad with track (and pad) when the user wants to hear it in the song.
+- Chord presets play their full voicing from a single root note. Use one root per hit rather than stacking a chord of chord presets. Available voicings: ${Object.keys(
+  CHORD_VOICINGS,
+)
+  .filter((c) => c !== "none")
+  .join(
+    ", ",
+  )}. Prefer C3-C4 for house chord roots unless the user wants a lower register. For classic club keyboards choose Piano house or Organ & garage; for tight modern stabs choose Tech house or Minimal; for soulful harmony choose Deep & soulful. fmDecay fades the FM strike for keyboard-like attacks. These presets are original synthesized interpretations, not sampled hardware replicas.
+- Vocal presets are synthesized vowel chops and choir textures, not recorded speech or sung words. Vowel settings are ah, eh, ee, oh and oo. Never promise lyrics or real vocal recordings from this engine.
 - Melodic sounds are rooted on C2: keep tune at 0 for them unless asked, so notes stay in key. Drums can use tune freely.
 - edit_sound changes one of the song's own sounds (listed in the song state). Built-in sounds never change; to tweak one, design_sound with start_from it.
 - Settings guide: darker = lower cutoff; brighter = higher cutoff; plucky = short filter decay with filter env 2-5; squelchy/acid = resonance 8-15 with filter env; fatter = sub, unison or a detuned osc 2; punchier = shorter attack and decay; gritty = drive 0.4+; longer = bigger length and release; metallic = FM amount 3+.

@@ -1,7 +1,7 @@
 // Sample loading: kit sounds are fetched from /kit (later a CDN) and decoded; patch sounds (factory
 // presets and the user's own) are rendered. Everything is lazy and cached in memory; a patch
 // re-renders when its settings change.
-import { KIT, patchHash, soundOf, type Song, type Sound, type SoundKind } from "@thk/song";
+import { KIT, ROOT, recordedSample, patchHash, soundOf, type Song, type Sound, type SoundKind } from "@thk/song";
 import type { BufferLookup } from "./engine.ts";
 import { renderPatch, type RenderPatchOptions } from "./synth.ts";
 
@@ -20,6 +20,9 @@ const defaultRender: PatchRenderer = (s, opts) => renderPatch(s.patch!, opts);
 
 export class SampleBank implements BufferLookup {
   private readonly buffers = new Map<string, AudioBuffer>();
+  private readonly files = new Map<string, AudioBuffer>();
+  private readonly filePending = new Map<string, Promise<AudioBuffer>>();
+  private readonly instruments = new Map<string, Sound>();
   /** Patch hash each rendered buffer was made from. */
   private readonly rendered = new Map<string, string>();
   private readonly pending = new Map<string, Promise<AudioBuffer | undefined>>();
@@ -43,6 +46,38 @@ export class SampleBank implements BufferLookup {
   get size() {
     return this.buffers.size;
   }
+  resolve(id: string, rate: number, velocity: number, take: number) {
+    const sound = this.instruments.get(id);
+    if (!sound) return undefined;
+    const selected = recordedSample(sound, ROOT + 12 * Math.log2(rate), velocity, take);
+    const buffer = selected && this.files.get(selected.file);
+    return selected && buffer ? { buffer, rate: selected.rate } : undefined;
+  }
+
+  private loadFile(file: string): Promise<AudioBuffer> {
+    const have = this.files.get(file);
+    if (have) return Promise.resolve(have);
+    const pending = this.filePending.get(file);
+    if (pending) return pending;
+    const p = this.fetcher(this.baseUrl + file + ".wav")
+      .then((data) => this.decoder.decodeAudioData(data))
+      .then((buffer) => {
+        this.files.set(file, buffer);
+        return buffer;
+      })
+      .finally(() => this.filePending.delete(file));
+    this.filePending.set(file, p);
+    return p;
+  }
+
+  private async loadRecording(sound: Sound) {
+    const [reference] = await Promise.all([
+      this.loadFile(sound.id),
+      ...[...new Set(sound.sampleMap?.flatMap((z) => z.files) ?? [])].map((file) => this.loadFile(file)),
+    ]);
+    if (sound.sampleMap) this.instruments.set(sound.id, sound);
+    return reference!;
+  }
   /** Called whenever a sound finishes loading or rendering. */
   onLoad(fn: (id: string) => void) {
     this.listeners.add(fn);
@@ -65,11 +100,7 @@ export class SampleBank implements BufferLookup {
     let p = this.pending.get(key);
     if (p) return p;
     if (!s.patch && this.failed.has(s.id)) return Promise.resolve(undefined);
-    p = (
-      s.patch
-        ? this.renderSound(s, song)
-        : this.fetcher(this.baseUrl + s.id + ".wav").then((d) => this.decoder.decodeAudioData(d))
-    )
+    p = (s.patch ? this.renderSound(s, song) : this.loadRecording(s))
       .then((b) => {
         this.buffers.set(s.id, b);
         this.rendered.set(s.id, hash);

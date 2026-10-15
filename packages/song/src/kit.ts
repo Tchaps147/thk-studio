@@ -1,4 +1,6 @@
 import data from "./kit-data.json" with { type: "json" };
+import recordings from "./recorded-data.json" with { type: "json" };
+import recordedLibrary from "./recorded-library-data.json" with { type: "json" };
 import { FACTORY } from "./presets.ts";
 import type { Song, Sound, SoundKind } from "./types.ts";
 
@@ -29,16 +31,47 @@ export const CATS: readonly [SoundKind, string, string][] = [
   ["stab", "Stabs", "Stab"],
   ["pluck", "Plucks", "Pluck"],
   ["fx", "FX", "FX"],
+  ["piano", "Pianos", "Piano"],
+  ["electric_piano", "Electric pianos", "Electric piano"],
+  ["organ", "Organs", "Organ"],
+  ["chord", "Chords", "Chord"],
+  ["strings", "Strings", "Strings"],
+  ["brass", "Brass", "Brass"],
+  ["guitar", "Guitars", "Guitar"],
+  ["mallet", "Bells & mallets", "Bell / mallet"],
+  ["vocal", "Vocals & chops", "Vocal"],
+  ["atmosphere", "Atmospheres", "Atmosphere"],
+  ["crash", "Crashes & cymbals", "Crash / cymbal"],
+  ["transition", "Transitions", "Transition"],
 ];
+
+/** Navigation groups are independent of sound ids and saved-song categories. */
+export const SOUND_GROUPS: readonly { id: string; label: string; categories: readonly SoundKind[] }[] = [
+  { id: "drums", label: "Drums", categories: ["kick", "clap", "snare", "hat_closed", "hat_open", "ride", "crash", "shaker", "rim", "perc", "tom"] },
+  { id: "bass", label: "Bass", categories: ["bass"] },
+  { id: "keys", label: "Keys", categories: ["piano", "electric_piano", "organ", "chord", "mallet"] },
+  { id: "synths", label: "Synths", categories: ["lead", "pad", "stab", "pluck"] },
+  { id: "acoustic", label: "Acoustic", categories: ["strings", "brass", "guitar"] },
+  { id: "vocals", label: "Vocals", categories: ["vocal"] },
+  { id: "fx", label: "FX", categories: ["fx", "atmosphere", "transition"] },
+]; // prettier-ignore
 /** Kinds a synth track plays chromatically (the rest are drum pads). */
-export const MELODIC: ReadonlySet<SoundKind> = new Set(["bass", "lead", "pad", "stab", "pluck"]);
+export const MELODIC: ReadonlySet<SoundKind> = new Set([
+  "bass", "lead", "pad", "stab", "pluck", "piano", "electric_piano", "organ", "chord",
+  "strings", "brass", "guitar", "mallet", "vocal", "atmosphere",
+]); // prettier-ignore
 export const CAT = Object.fromEntries(CATS.map(([k, plural, one]) => [k, { plural, one }])) as Record<
   SoundKind,
   { plural: string; one: string }
 >;
 
-/** Every built-in sound: the rendered kit (assets/) followed by the factory synth presets. */
-export const KIT: readonly Sound[] = [...(data.sounds as Sound[]), ...FACTORY];
+/** Every built-in sound: rendered kit, factory synths and recorded instruments. */
+export const KIT: readonly Sound[] = [
+  ...(data.sounds as Sound[]),
+  ...FACTORY,
+  ...(recordings as Sound[]),
+  ...(recordedLibrary as Sound[]),
+];
 export const BY_ID: Readonly<Record<string, Sound>> = Object.fromEntries(KIT.map((s) => [s.id, s]));
 /** Old sound ids -> current ids. Ids are permanent; renames go through this map. */
 export const ALIAS: Readonly<Record<string, string>> = data.alias;
@@ -55,11 +88,12 @@ export const DEFAULT_PADS = [
 ] as const;
 export const DEFAULT_SYNTH_SAMPLE = "THK_Bass_02_Rolling_Saw_Pluck_C";
 
-export const CAT_DEFAULT: Readonly<Record<SoundKind, string>> = (() => {
+export const CAT_DEFAULT: Readonly<Partial<Record<SoundKind, string>>> = (() => {
   const d: Partial<Record<SoundKind, string>> = {};
   for (const s of KIT) d[s.kind] ??= s.id;
   d.kick = "THK_Kick_02_Classic_909_G";
-  return d as Record<SoundKind, string>;
+  d.guitar = "THK_RecordedGuitar_01_Acoustic";
+  return d;
 })();
 
 export const sound = (id: string | null | undefined): Sound | undefined => (id ? BY_ID[id] : undefined);

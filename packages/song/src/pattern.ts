@@ -33,6 +33,9 @@ const SYN: Record<string, SoundKind> = {
   perc: "perc", percussion: "perc", conga: "perc", congas: "perc", bongo: "perc", bongos: "perc", cowbell: "perc",
   tom: "tom", toms: "tom",
   fx: "fx", riser: "fx", impact: "fx", sweep: "fx",
+  vocal: "vocal", vocals: "vocal", "vocal chop": "vocal", "vocal chops": "vocal",
+  chord: "chord", chords: "chord", crash: "crash", crashes: "crash",
+  transition: "transition", transitions: "transition", uplifter: "transition", downlifter: "transition",
 }; // prettier-ignore
 
 /** A drum category from loose text ("Hi hats", "open_hat"), or null. */
@@ -96,7 +99,9 @@ export function resolvePad(tr: DrumTrack, spec: unknown, taken: Set<number>, son
   if (free < 0) free = tr.pads.findIndex((_p, i) => !taken.has(i) && !used.has(i));
   if (free < 0)
     return fail(`All 8 pads on "${tr.name}" are in use. Put the ${CAT[cat].one.toLowerCase()} on another drum track.`);
-  tr.pads[free] = id ?? CAT_DEFAULT[cat];
+  const chosen = id ?? CAT_DEFAULT[cat];
+  if (!chosen) return fail(`No preset sounds in ${CAT[cat].plural} yet. Choose a sound id or make a sound first.`);
+  tr.pads[free] = chosen;
   return free;
 }
 

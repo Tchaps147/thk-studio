@@ -152,7 +152,7 @@ test.describe("prototype smoke test, ported", () => {
     await page.fill("#prompt", "anything else");
     await page.keyboard.press("Enter");
     await expect(page.locator(".acts .err").last()).toHaveText(
-      "✕ Claude is busy or you've reached a usage limit. Try again in a little while.",
+      "✕ The assistant is busy or you've reached a usage limit. Choose the other assistant or try again later.",
     );
     expect(await ev<number>(page, "return t.get().history.past.length;")).toBe(0);
     expect(errors).toEqual([]);
@@ -160,6 +160,68 @@ test.describe("prototype smoke test, ported", () => {
 });
 
 test.describe("assistant through the API", () => {
+  test("selects ChatGPT, remembers the choice, labels fallback replies and undoes their edits", async ({ page }) => {
+    const errors: string[] = [];
+    const providers: string[] = [];
+    await page.route("**/api/assistant", async (r) => {
+      providers.push(r.request().postDataJSON().provider);
+      await r.fulfill({
+        json: {
+          provider: "chatgpt",
+          model: "account-default",
+          fallback: { from: "claude", code: "rate_limited" },
+          text: "Your kick is ready.",
+          steps: [{ tool: "write_drums", ok: true, text: "Kick" }],
+          edits: [
+            {
+              tool: "write_drums",
+              input: {
+                track: "Groove",
+                start_bar: 1,
+                bars: 4,
+                pattern_bars: 1,
+                lanes: [{ sound: "kick", steps: "x---" }],
+              },
+            },
+          ],
+          variations: [],
+          stop: "done",
+          usage: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+        },
+      });
+    });
+    await fresh(page, errors, true);
+    await page.route("**/api/assistant/status", (r) =>
+      r.fulfill({
+        json: {
+          configured: true,
+          providers: { chatgpt: { configured: true } },
+        },
+      }),
+    );
+    await page.reload();
+    const selector = page.getByRole("combobox", { name: "AI provider" });
+    await expect(selector).toHaveValue("auto");
+    await page.fill("#prompt", "add a kick");
+    await page.keyboard.press("Enter");
+    const bot = page.locator(".msg.bot").last();
+    await expect(bot.locator(".who")).toHaveText("ChatGPT");
+    await expect(bot.locator(".acts")).toContainText("Claude was unavailable. ChatGPT handled this request.");
+    expect(await ev<number>(page, "return t.get().history.past.length;")).toBe(1);
+    await bot.getByRole("button", { name: "Undo these changes" }).click();
+    expect(await ev(page, "return find('Groove') ?? null;")).toBeNull();
+    await selector.selectOption("chatgpt");
+    await page.reload();
+    await expect(selector).toHaveValue("chatgpt");
+    await expect(page.locator(".assistant-status")).toContainText("ChatGPT connected");
+    await page.fill("#prompt", "add another kick");
+    await page.keyboard.press("Enter");
+    await expect(page.locator(".msg.bot").last().locator(".body")).toHaveText("Your kick is ready.");
+    expect(providers).toEqual(["auto", "chatgpt"]);
+    expect(errors).toEqual([]);
+    await page.screenshot({ path: "/tmp/thk-chatgpt-ui.png", fullPage: true });
+  });
+
   test("replays the server's edits as one undo step and shows its variations", async ({ page }) => {
     const errors: string[] = [];
     let sent: { request?: string; song?: { name: string }; tier?: string } = {};
@@ -295,7 +357,7 @@ test.describe("editing by hand", () => {
     expect(await ev(page, "return S().loop.on;")).toBe(true);
 
     await page.getByRole("button", { name: "Claps" }).click();
-    await expect(page.locator("#catCount")).toHaveText("10 sounds"); // 8 kit claps + 2 synth presets
+    await expect(page.locator("#catCount")).toHaveText("30 sounds");
     await page.locator(".item", { hasText: "Big 909" }).getByRole("button", { name: "Use" }).click();
     expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Clap_08_Big_909");
     await expect(page.locator("#toast")).toHaveText("Bass now plays Big 909.");
@@ -333,6 +395,289 @@ test.describe("editing by hand", () => {
 });
 
 test.describe("sound maker", () => {
+  test("searches the full library and filters recorded instruments without preloading categories", async ({ page }) => {
+    const errors: string[] = [],
+      recordings: string[] = [];
+    await fresh(page, errors);
+    page.on("request", (request) => {
+      if (/\/kit\/(REC_|THK_Library_)/.test(request.url())) recordings.push(request.url());
+    });
+    const original = await ev(page, "return JSON.stringify(S());");
+    await page.getByLabel("Search all sounds", { exact: true }).fill("grand piano");
+    await page.getByLabel("Sound source", { exact: true }).selectOption("recorded");
+    await page.getByLabel("Sample pack", { exact: true }).selectOption("Versilian");
+    await expect(page.locator(".item-name")).toHaveText(["Kawai Grand Piano", "Steinway Close Piano"]);
+    expect(recordings).toEqual([]);
+    const piano = page.locator(".item", { hasText: "Kawai Grand Piano" });
+    await piano.locator(".item-play").click();
+    await expect.poll(() => ev(page, "return t.audio().bank.has('THK_Library_piano_Kawai_Grand_Piano');")).toBe(true);
+    expect(recordings.length).toBeGreaterThan(1);
+    await piano.getByRole("button", { name: "Use", exact: true }).click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Library_piano_Kawai_Grand_Piano");
+    await page.click("#undoBtn");
+    expect(await ev(page, "return JSON.stringify(S());")).toBe(original);
+    await page.getByLabel("Search all sounds", { exact: true }).fill("no such instrument xyz");
+    await expect(page.getByText("No matching sounds", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "Clear filters", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("70 sounds");
+    expect(errors).toEqual([]);
+  });
+
+  test("previews a recorded vocal phrase at its original speed and assigns it to a drum pad", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page.getByLabel("Search all sounds", { exact: true }).fill("check this out");
+    await page.getByLabel("Sound source", { exact: true }).selectOption("recorded");
+    await expect(page.locator(".item-name")).toHaveText(["Microlag Vocal Check This Out"]);
+    await ev(
+      page,
+      `window.__vocalRates = []; const engine=t.audio().engine, trigger=engine.trigger.bind(engine); engine.trigger=(...args)=>{if(args[1]==='THK_Library_vocal_Microlag_Vocal_Check_This_Out')window.__vocalRates.push(args[3].rate);return trigger(...args);};`,
+    );
+    const vocal = page.locator(".item", { hasText: "Microlag Vocal Check This Out" });
+    await vocal.locator(".item-play").click();
+    await expect.poll(() => page.evaluate("window.__vocalRates.at(-1)")).toBe(1);
+    await page.locator(".clip", { hasText: "Main groove" }).first().click();
+    await page.locator('.pad-row[data-row="7"] .pad-n').click();
+    await vocal.getByRole("button", { name: "Use", exact: true }).click();
+    expect(await ev(page, "return find('Tops').pads[7];")).toBe("THK_Library_vocal_Microlag_Vocal_Check_This_Out");
+    await page.click("#undoBtn");
+    expect(await ev(page, "return find('Tops').pads[7];")).not.toBe("THK_Library_vocal_Microlag_Vocal_Check_This_Out");
+    expect(errors).toEqual([]);
+  });
+
+  test("browses every populated group and remembers categories", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    const groups = page.getByRole("group", { name: "Instrument group", exact: true });
+    await expect(groups.getByRole("button")).toHaveText([
+      "Drums",
+      "Bass",
+      "Keys",
+      "Synths",
+      "Acoustic",
+      "Vocals",
+      "FX",
+    ]);
+    await groups.getByRole("button", { name: "Keys", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("11 sounds");
+    await expect(page.locator("#blist")).toContainText("Classic Dance Piano");
+    await page.getByRole("button", { name: "Electric pianos", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("9 sounds");
+    await page.getByRole("button", { name: "Organs", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("11 sounds");
+    await page.getByRole("button", { name: "Bells & mallets", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("12 sounds");
+    await page.getByRole("button", { name: "Chords", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("48 sounds");
+    await groups.getByRole("button", { name: "Acoustic", exact: true }).click();
+    await expect(page.getByRole("group", { name: "Sound category", exact: true }).getByRole("button")).toHaveText([
+      "Strings",
+      "Brass",
+      "Guitars",
+    ]);
+    await expect(page.locator("#catCount")).toHaveText("10 sounds");
+    await groups.getByRole("button", { name: "FX", exact: true }).click();
+    await page.getByRole("button", { name: "Atmospheres", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("6 sounds");
+    await page.getByRole("button", { name: "Transitions", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("8 sounds");
+    await groups.getByRole("button", { name: "Drums", exact: true }).click();
+    await page.getByRole("button", { name: "Crashes & cymbals", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("23 sounds");
+    await groups.getByRole("button", { name: "Keys", exact: true }).click();
+    await expect(page.getByRole("button", { name: "Chords", exact: true })).toHaveAttribute("aria-pressed", "true");
+    expect(errors).toEqual([]);
+  });
+
+  test("previews both real recorded guitars, assigns them and exports a guitar phrase", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page
+      .getByRole("group", { name: "Instrument group", exact: true })
+      .getByRole("button", { name: "Acoustic", exact: true })
+      .click();
+    await page.getByRole("button", { name: "Guitars", exact: true }).click();
+    await expect(page.locator(".item-name").nth(0)).toHaveText("Recorded Acoustic Guitar");
+    await expect(page.locator(".item-name").nth(1)).toHaveText("Recorded Electric Guitar");
+    for (const [name, id] of [
+      ["Recorded Acoustic Guitar", "THK_RecordedGuitar_01_Acoustic"],
+      ["Recorded Electric Guitar", "THK_RecordedGuitar_02_Electric"],
+    ]) {
+      const item = page.locator(".item", { hasText: name });
+      await item.locator(".item-play").click();
+      await expect.poll(() => ev(page, `return t.audio().bank.has('${id}');`)).toBe(true);
+      await expect(item.locator(".item-meta")).toContainText("recorded guitar");
+      expect(await ev(page, `return t.audio().bank.resolve('${id}',2,1,0).rate;`)).toBe(1);
+      await item.getByRole("button", { name: "Use", exact: true }).click();
+      expect(await ev(page, "return find('Bass').sample;")).toBe(id);
+      await page.click("#undoBtn");
+    }
+    const exported = await ev<{ peak: number; bytes: number }>(
+      page,
+      `
+      const song = t.song.emptySong();
+      song.tracks = [{...find('Bass'), sample:'THK_RecordedGuitar_01_Acoustic', clips:[t.song.makeClip(0,1,1,[t.song.N(0,4,48)])]}];
+      const result = await t.buildExport(song);
+      let peak = 0; for(const x of result.buffer.getChannelData(0)) peak=Math.max(peak,Math.abs(x));
+      return {peak,bytes:result.zip.length};
+    `,
+    );
+    expect(exported.peak).toBeGreaterThan(0.01);
+    expect(exported.peak).toBeLessThan(1);
+    expect(exported.bytes).toBeGreaterThan(1000);
+    expect(errors).toEqual([]);
+  });
+
+  test("previews acoustic guitars, assigns a chord and keeps its voicing when copied", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page
+      .getByRole("group", { name: "Instrument group", exact: true })
+      .getByRole("button", { name: "Acoustic", exact: true })
+      .click();
+    await page.getByRole("button", { name: "Guitars", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("23 sounds");
+    const original = await ev(page, "return JSON.stringify(S());");
+    await page.getByTitle("Play Acoustic Nylon Fingerpick", { exact: true }).click();
+    await expect
+      .poll(() => ev(page, "return t.audio().bank.has('THK_Guitar_07_Acoustic_Nylon_Fingerpick');"))
+      .toBe(true);
+    expect(await ev(page, "return JSON.stringify(S());")).toBe(original);
+    const chord = page.locator(".item", { hasText: "Acoustic Major Chord" });
+    await chord.getByRole("button", { name: "Use", exact: true }).click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Guitar_16_Acoustic_Major_Chord");
+    await page.click("#undoBtn");
+    expect(await ev(page, "return JSON.stringify(S());")).toBe(original);
+    await chord.getByRole("button", { name: "Copy", exact: true }).click();
+    const maker = page.getByTestId("sound-maker");
+    await expect(maker.getByLabel("Chord voicing", { exact: true })).toHaveValue("major_open");
+    await maker.getByRole("button", { name: "Save sound", exact: true }).click();
+    expect(await ev(page, "return [S().sounds[0].kind, S().sounds[0].patch.chord];")).toEqual(["guitar", "major_open"]);
+    expect(errors).toEqual([]);
+  });
+
+  test("previews and assigns the new piano and crash presets with undo", async ({ page }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    const groups = page.getByRole("group", { name: "Instrument group", exact: true });
+    await groups.getByRole("button", { name: "Keys", exact: true }).click();
+    await page.getByTitle("Play Classic Dance Piano", { exact: true }).click();
+    const piano = page.locator(".item", { hasText: "Classic Dance Piano" });
+    await piano.getByRole("button", { name: "Use", exact: true }).click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Piano_01_Classic_Dance_Piano");
+    await page.click("#undoBtn");
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Bass_02_Rolling_Saw_Pluck_C");
+    await page.locator(".clip", { hasText: "Main groove" }).first().click();
+    await page.locator('.pad-row[data-row="7"] .pad-n').click();
+    await expect(page.locator("#target")).toContainText("Tops, pad 8");
+    await groups.getByRole("button", { name: "Drums", exact: true }).click();
+    await page.getByRole("button", { name: "Crashes & cymbals", exact: true }).click();
+    await page.getByTitle("Play Bright House Crash", { exact: true }).click();
+    await page
+      .locator(".item", { hasText: "Bright House Crash" })
+      .getByRole("button", { name: "Use", exact: true })
+      .click();
+    expect(await ev(page, "return find('Tops').pads[7];")).toBe("THK_Crash_01_Bright_House_Crash");
+    await page.click("#undoBtn");
+    expect(await ev(page, "return find('Tops').pads[7];")).not.toBe("THK_Crash_01_Bright_House_Crash");
+    expect(errors).toEqual([]);
+  });
+
+  test("auditions and assigns chords and vocals, edits their synthesis controls and reloads the saved sounds", async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    const groups = page.getByRole("group", { name: "Instrument group", exact: true });
+    await groups.getByRole("button", { name: "Keys", exact: true }).click();
+    await page.getByRole("button", { name: "Chords", exact: true }).click();
+    await page.getByTitle("Play Deep Minor Seven", { exact: true }).click();
+    await page
+      .locator(".item", { hasText: "Deep Minor Seven" })
+      .getByRole("button", { name: "Use", exact: true })
+      .click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Chord_01_Deep_Minor_Seven");
+    await page
+      .locator(".item", { hasText: "Deep Minor Seven" })
+      .getByRole("button", { name: "Copy", exact: true })
+      .click();
+    const maker = page.getByTestId("sound-maker");
+    await maker.getByLabel("Chord voicing", { exact: true }).selectOption("major7");
+    await maker.getByRole("button", { name: "Save sound", exact: true }).click();
+    expect(await ev(page, "return S().sounds[0].patch.chord;")).toBe("major7");
+    await maker.getByRole("button", { name: "Close", exact: true }).click();
+    await groups.getByRole("button", { name: "Vocals", exact: true }).click();
+    await expect(page.locator(".browser-category")).toContainText("Recorded vocal phrases");
+    await expect(page.locator("#catCount")).toHaveText("24 sounds");
+    await page.getByTitle("Play Ah Chop", { exact: true }).click();
+    await page.locator(".item", { hasText: "Ah Chop" }).getByRole("button", { name: "Use", exact: true }).click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Vocal_01_Ah_Chop");
+    await page.locator(".item", { hasText: "Ah Chop" }).getByRole("button", { name: "Copy", exact: true }).click();
+    await maker.getByLabel("Vowel", { exact: true }).selectOption("oo");
+    await maker.getByRole("button", { name: "Save sound", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("25 sounds");
+    const before = await ev(
+      page,
+      "return S().sounds.map(s => [s.kind, s.patch.chord ?? null, s.patch.vowel ?? null]);",
+    );
+    await expect
+      .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("thk-studio-song-v1") ?? "{}").sounds?.length))
+      .toBe(2);
+    await page.reload();
+    expect(
+      await ev(page, "return S().sounds.map(s => [s.kind, s.patch.chord ?? null, s.patch.vowel ?? null]);"),
+    ).toEqual(before);
+    expect(errors).toEqual([]);
+  });
+
+  test("filters the house chord pack, previews higher octaves and saves the new keyboard controls", async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    await fresh(page, errors);
+    await page.getByRole("button", { name: "Keys", exact: true }).click();
+    await page.getByRole("button", { name: "Chords", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("48 sounds");
+    const styles = page.getByRole("group", { name: "Chord style", exact: true });
+    await styles.getByRole("button", { name: "Piano house", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("5 sounds");
+    await expect(page.locator(".item")).toHaveCount(5);
+    await expect(page.locator("#blist")).toContainText("Classic Club Piano");
+    await expect(page.getByLabel("Chord preview octave")).toHaveValue("48");
+    const original = await ev(page, "return JSON.stringify(S());");
+    await ev(
+      page,
+      `window.__auditionRates = []; const engine = t.audio().engine, trigger = engine.trigger.bind(engine); engine.trigger = (...args) => { if (args[3]?.choke === 'aud') window.__auditionRates.push(args[3].rate); return trigger(...args); };`,
+    );
+    await page.getByLabel("Chord preview octave").selectOption("60");
+    await page.getByTitle("Play Classic Club Piano", { exact: true }).click();
+    await expect.poll(() => page.evaluate("window.__auditionRates.at(-1)")).toBe(4);
+    expect(await ev(page, "return JSON.stringify(S());")).toBe(original);
+    await page
+      .locator(".item", { hasText: "Classic Club Piano" })
+      .getByRole("button", { name: "Copy", exact: true })
+      .click();
+    const maker = page.getByTestId("sound-maker");
+    await expect(maker.getByLabel("FM attack decay", { exact: true })).toBeVisible();
+    await maker.getByLabel("Chord voicing", { exact: true }).selectOption("minor9");
+    await maker.getByRole("button", { name: "Save sound", exact: true }).click();
+    expect(
+      await ev(page, "return [S().sounds[0].family, S().sounds[0].patch.chord, S().sounds[0].patch.fmDecay];"),
+    ).toEqual(["piano", "minor9", 0.08]);
+    await maker.getByRole("button", { name: "Close", exact: true }).click();
+    await styles.getByRole("button", { name: "Tech house", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("5 sounds");
+    await expect(page.locator("#blist")).toContainText("Classic Tech Stab");
+    await page
+      .locator(".item", { hasText: "Classic Tech Stab" })
+      .getByRole("button", { name: "Use", exact: true })
+      .click();
+    expect(await ev(page, "return find('Bass').sample;")).toBe("THK_Chord_39_Classic_Tech_Stab");
+    await styles.getByRole("button", { name: "All", exact: true }).click();
+    await expect(page.locator("#catCount")).toHaveText("49 sounds");
+    expect(errors).toEqual([]);
+  });
+
   test("make a bass, shape it, save it onto the selected track: one undo step, kept in My sounds", async ({ page }) => {
     const errors: string[] = [];
     await fresh(page, errors);
@@ -369,7 +714,8 @@ test.describe("sound maker", () => {
   test("copy a factory preset into an editable sound", async ({ page }) => {
     const errors: string[] = [];
     await fresh(page, errors);
-    await page.getByRole("button", { name: "Leads" }).click();
+    await page.getByRole("button", { name: "Synths", exact: true }).click();
+    await page.getByRole("button", { name: "Leads", exact: true }).click();
     await page.locator("#blist .item").first().getByRole("button", { name: "Copy" }).click();
     const maker = page.getByTestId("sound-maker");
     await expect(maker.getByLabel("Sound name")).toHaveValue("Detuned Saw copy");

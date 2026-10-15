@@ -19,6 +19,7 @@ export const MODEL = "claude-opus-5-5";
 /** "quick" answers in seconds; "default" thinks longer and writes more musical parts. */
 export const EFFORT = { quick: "low", default: "high" } as const;
 export type Tier = keyof typeof EFFORT;
+export type AssistantProvider = "auto" | "claude" | "chatgpt";
 const MAX_ROUNDS = 12;
 
 export interface ChatTurn {
@@ -32,6 +33,7 @@ export interface AssistantRequest {
   /** Earlier turns, plain text; the last 8 are sent. */
   history?: ChatTurn[];
   tier?: Tier;
+  provider?: AssistantProvider;
 }
 export interface Step {
   tool: string;
@@ -54,6 +56,9 @@ export const userPrompt = (req: AssistantRequest, song: Song) =>
   `Current song state:\n${stateText(song, req.sel)}\n\nRequest: ${req.request}`;
 
 export interface AssistantResponse {
+  provider?: "claude" | "chatgpt";
+  model?: string;
+  fallback?: { from: "claude"; code: string };
   text: string;
   /** Every tool call, in order, with its outcome (shown under the reply). */
   steps: Step[];

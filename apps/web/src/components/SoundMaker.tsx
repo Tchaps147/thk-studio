@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { peaksOf } from "@thk/audio";
 import {
   CAT,
+  CHORD_LABELS,
   INSTRUMENTS,
   KIT,
   MELODIC,
@@ -91,7 +92,12 @@ export function SoundMaker() {
   const target = tr ? (tr.type === "synth" ? tr.name : `${tr.name} pad ${sel.row + 1}`) : null;
   const set = (p: Partial<Patch>, play = true) => {
     updateDraft({ patch: clampPatch(p, patch) });
-    if (play) setTimeout(() => void auditionDraft(get().maker!.draft, melodic ? lastNote : 36), 90);
+    const next = get().maker?.draft;
+    if (play && next)
+      setTimeout(() => {
+        // Cancel a pending preview when the maker closes, saves or switches to another draft.
+        if (get().maker?.draft === next) void auditionDraft(next, melodic ? lastNote : 36);
+      }, 90);
   };
   const starts = KIT.filter((s) => s.kind === draft.kind).concat(
     (song.sounds ?? []).filter((s) => s.kind === draft.kind),
@@ -283,12 +289,22 @@ function ParamControl({
 }) {
   if (isEnum(p))
     return (
-      <label className="mrow">
+      <label className="mrow" title={p.help}>
         <span>{p.label}</span>
-        <select aria-label={p.label} value={String(value)} onChange={(e) => onChange(e.target.value, true)}>
+        <select
+          aria-label={p.label}
+          value={String(value ?? p.options[0])}
+          onChange={(e) => onChange(e.target.value, true)}
+        >
           {p.options.map((o) => (
             <option key={o} value={o}>
-              {o}
+              {p.key === "chord"
+                ? CHORD_LABELS[o as keyof typeof CHORD_LABELS]
+                : p.key === "vowel"
+                  ? o === "off"
+                    ? "Off"
+                    : o[0]!.toUpperCase() + o.slice(1)
+                  : o}
             </option>
           ))}
         </select>
@@ -306,7 +322,7 @@ function ParamControl({
         />
       </label>
     );
-  const v = value as number;
+  const v = typeof value === "number" ? value : p.min;
   return (
     <label className="mrow" title={p.help}>
       <span>{p.label}</span>

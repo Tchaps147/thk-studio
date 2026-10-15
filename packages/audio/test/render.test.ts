@@ -76,7 +76,9 @@ describe("offline render", () => {
     const L = buf.getChannelData(0),
       R = buf.getChannelData(1),
       sr = buf.sampleRate;
-    expect(buf.duration).toBeCloseTo(32 * 16 * stepDur(song) + 3, 1);
+    const minimum = 32 * 16 * stepDur(song) + 3;
+    expect(buf.duration).toBeGreaterThanOrEqual(minimum);
+    expect(buf.duration).toBeLessThan(minimum + 1); // Includes the demo's final freely ringing drum tail.
     const pk = Math.max(peak(L), peak(R));
     // node-web-audio-api's compressor lets the demo peak at ~1.04 in float; Chromium keeps it at or
     // under 1.0 (asserted in e2e/studio.spec.ts, as the prototype did). Export normalizes either way.

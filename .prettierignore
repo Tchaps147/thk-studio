@@ -5,6 +5,8 @@ pnpm-lock.yaml
 **/dist/
 apps/web/public/kit/
 packages/song/src/kit-data.json
+packages/song/src/recorded-data.json
+packages/song/src/recorded-library-data.json
 packages/audio/test/fixtures/
 test-results/
 playwright-report/

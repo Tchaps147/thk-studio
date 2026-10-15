@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { findTrack } from "@thk/song";
 import { keepVariation, revertVariation, tryVariation } from "../lib/actions.ts";
-import { sendPrompt, stopPrompt, undoTurn } from "../lib/assistant.ts";
+import type { AssistantProvider } from "@thk/api";
+import { initAssistant, sendPrompt, setAssistantProvider, stopPrompt, undoTurn } from "../lib/assistant.ts";
 import { get, useStudio, type ChatMsg } from "../lib/store.ts";
 
 const CHIPS = [
@@ -14,7 +15,7 @@ const CHIPS = [
 
 export function Assistant() {
   const chat = useStudio((s) => s.chat);
-  const { available, busy } = useStudio((s) => s.ai);
+  const { available, busy, provider, api, chatgptReady } = useStudio((s) => s.ai);
   const [tier, setTier] = useState("quick");
   const [text, setText] = useState("");
   const box = useRef<HTMLDivElement>(null);
@@ -38,6 +39,35 @@ export function Assistant() {
             <option value="default">Thorough</option>
           </select>
         </label>
+      </div>
+      <div className="assistant-connection">
+        {api && (
+          <label className="ctl">
+            <span className="label">Assistant</span>
+            <select
+              aria-label="AI provider"
+              value={provider}
+              disabled={busy}
+              onChange={(e) => setAssistantProvider(e.target.value as AssistantProvider)}
+            >
+              <option value="auto">Auto · Claude → ChatGPT</option>
+              <option value="claude">Claude</option>
+              <option value="chatgpt">ChatGPT</option>
+            </select>
+          </label>
+        )}
+        <div className="assistant-status">
+          <span>
+            {api
+              ? chatgptReady
+                ? "ChatGPT connected · personal account"
+                : "ChatGPT: run codex login to connect"
+              : "Studio assistant"}
+          </span>
+          <button className="mini" type="button" disabled={busy} onClick={() => void initAssistant()}>
+            Reconnect
+          </button>
+        </div>
       </div>
       <div className="chat" id="chat" aria-live="polite" ref={box}>
         {chat.map((m) => (

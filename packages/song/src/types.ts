@@ -5,7 +5,19 @@ import type { Patch } from "./patch.ts";
 
 export type SoundKind =
   | "kick" | "clap" | "snare" | "hat_closed" | "hat_open" | "ride" | "shaker" | "rim" | "perc" | "tom"
-  | "bass" | "lead" | "pad" | "stab" | "pluck" | "fx"; // prettier-ignore
+  | "bass" | "lead" | "pad" | "stab" | "pluck" | "fx"
+  | "piano" | "electric_piano" | "organ" | "chord" | "strings" | "brass" | "guitar" | "mallet"
+  | "vocal" | "atmosphere" | "crash" | "transition"; // prettier-ignore
+
+export type ChordFamily = "piano" | "organ" | "deep" | "dub" | "rave" | "disco" | "tech" | "minimal";
+
+export interface SampleZone {
+  /** Original recorded MIDI pitch. */
+  root: number;
+  maxVelocity: number;
+  /** Alternating recorded takes, as bundled WAV file stems. */
+  files: string[];
+}
 
 export interface Sound {
   id: string;
@@ -21,6 +33,13 @@ export interface Sound {
   patch?: Patch;
   /** Made by the user (sound maker or assistant); stored in the song and the user's library. */
   custom?: boolean;
+  family?: ChordFamily;
+  description?: string;
+  /** Recorded instrument; the C2 reference file remains available for sample editing. */
+  sampleMap?: SampleZone[];
+  recording?: { pack: string; author: string; license: string; source: string };
+  tags?: string[];
+  previewNote?: number;
 }
 
 export interface Note {

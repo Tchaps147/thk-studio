@@ -8,6 +8,31 @@ export const WAVES = ["sine", "triangle", "saw", "square"] as const;
 export type Wave = (typeof WAVES)[number];
 export const FILTER_TYPES = ["lowpass", "highpass", "bandpass"] as const;
 export type FilterType = (typeof FILTER_TYPES)[number];
+export const CHORD_VOICINGS = {
+  none: [0],
+  major: [0, 4, 7],
+  minor: [0, 3, 7],
+  minor7: [0, 3, 7, 10],
+  major7: [0, 4, 7, 11],
+  dominant7: [0, 4, 7, 10],
+  sus2: [0, 2, 7],
+  sus4: [0, 5, 7],
+  minor9: [0, 3, 7, 10, 14],
+  major9: [0, 4, 7, 11, 14],
+  dominant9: [0, 4, 7, 10, 14],
+  minor11: [0, 3, 7, 10, 14, 17],
+  major6: [0, 4, 7, 9],
+  minor6: [0, 3, 7, 9],
+  major_open: [0, 7, 16],
+  minor_open: [0, 7, 15],
+} as const;
+export const CHORD_LABELS: Record<keyof typeof CHORD_VOICINGS, string> = {
+  none: "Single note", major: "Major", minor: "Minor", minor7: "Minor 7th", major7: "Major 7th",
+  dominant7: "Dominant 7th", sus2: "Suspended 2nd", sus4: "Suspended 4th", minor9: "Minor 9th",
+  major9: "Major 9th", dominant9: "Dominant 9th", minor11: "Minor 11th", major6: "Major 6th",
+  minor6: "Minor 6th", major_open: "Open major", minor_open: "Open minor",
+}; // prettier-ignore
+export const VOWELS = ["off", "ah", "eh", "ee", "oh", "oo"] as const;
 
 export interface Patch {
   /** "synth": oscillators. "sample": an existing kit sound reshaped. */
@@ -26,6 +51,8 @@ export interface Patch {
   noise: number;
   fmRatio: number;
   fmAmount: number;
+  /** Optional FM attack decay; missing or zero preserves constant-depth legacy synthesis. */
+  fmDecay?: number;
   tune: number;
   pitchEnv: number;
   pitchDecay: number;
@@ -46,6 +73,9 @@ export interface Patch {
   start: number;
   end: number;
   reverse: boolean;
+  /** Optional for compatibility with sounds saved before chord/vowel synthesis. */
+  chord?: keyof typeof CHORD_VOICINGS;
+  vowel?: (typeof VOWELS)[number];
 }
 
 export type ParamGroup = "Source" | "Pitch" | "Filter" | "Amp" | "Character" | "Sample";
@@ -101,6 +131,9 @@ export const PARAMS: readonly Param[] = [
   { key: "noise", label: "Noise", group: "Source", min: 0, max: 1, step: 0.01, help: "White noise: hats, claps, snares, risers, breath.", engines: S },
   { key: "fmRatio", label: "FM ratio", group: "Source", min: 0.5, max: 16, step: 0.5, help: "Frequency ratio of the FM modulator (1, 2, 3.5 ... ).", engines: S },
   { key: "fmAmount", label: "FM amount", group: "Source", min: 0, max: 20, step: 0.1, help: "FM depth: 0 off, 1-3 bells and electric pianos, higher for metallic growls.", engines: S },
+  { key: "fmDecay", label: "FM attack decay", group: "Source", min: 0, max: 2, step: 0.005, unit: "s", help: "Fade the metallic FM attack into a rounded tone. Zero keeps constant FM depth.", engines: S },
+  { key: "chord", label: "Chord voicing", group: "Source", options: Object.keys(CHORD_VOICINGS), help: "Play a full chord from each note. None keeps the original single-note sound.", engines: S },
+  { key: "vowel", label: "Vowel", group: "Character", options: VOWELS, help: "Shape the sound with vocal formants: Ah, Eh, Ee, Oh or Oo. Off keeps the original tone.", engines: S },
   { key: "source", label: "Source sound", group: "Sample", options: [], help: "Sample engine: id of the kit sound to reshape.", engines: SM },
   { key: "start", label: "Start", group: "Sample", min: 0, max: 0.95, step: 0.01, help: "Sample engine: where playback starts, as a fraction of the source.", engines: SM },
   { key: "end", label: "End", group: "Sample", min: 0.05, max: 1, step: 0.01, help: "Sample engine: where playback ends, as a fraction of the source.", engines: SM },
@@ -175,6 +208,18 @@ export const INSTRUMENTS: readonly { kind: SoundKind; label: string; melodic: bo
   { kind: "pad", label: "Pad", melodic: true },
   { kind: "stab", label: "Stab / chord", melodic: true },
   { kind: "pluck", label: "Pluck", melodic: true },
+  { kind: "piano", label: "Piano", melodic: true },
+  { kind: "electric_piano", label: "Electric piano", melodic: true },
+  { kind: "organ", label: "Organ", melodic: true },
+  { kind: "chord", label: "Chord", melodic: true },
+  { kind: "strings", label: "Strings", melodic: true },
+  { kind: "brass", label: "Brass", melodic: true },
+  { kind: "guitar", label: "Guitar", melodic: true },
+  { kind: "mallet", label: "Bell / mallet", melodic: true },
+  { kind: "vocal", label: "Vocal", melodic: true },
+  { kind: "atmosphere", label: "Atmosphere", melodic: true },
+  { kind: "transition", label: "Transition", melodic: false },
+  { kind: "crash", label: "Crash / cymbal", melodic: false },
   { kind: "fx", label: "FX", melodic: false },
   { kind: "kick", label: "Kick", melodic: false },
   { kind: "snare", label: "Snare", melodic: false },
@@ -183,6 +228,9 @@ export const INSTRUMENTS: readonly { kind: SoundKind; label: string; melodic: bo
   { kind: "hat_open", label: "Open hat", melodic: false },
   { kind: "perc", label: "Perc", melodic: false },
   { kind: "tom", label: "Tom", melodic: false },
+  { kind: "ride", label: "Ride", melodic: false },
+  { kind: "shaker", label: "Shaker", melodic: false },
+  { kind: "rim", label: "Rim", melodic: false },
 ];
 
 /** Starting point for each instrument in the sound maker. */
@@ -203,6 +251,18 @@ export const INSTRUMENT_PATCH: Record<SoundKind, Partial<Patch>> = {
   ride: { osc1Wave: "square", osc1Level: 0.4, fmRatio: 5.5, fmAmount: 9, tune: 48, noise: 0.4, filterType: "highpass", cutoff: 4000, attack: 0, decay: 1.2, sustain: 0, release: 0.3, length: 2 },
   shaker: { osc1Level: 0, noise: 1, filterType: "highpass", cutoff: 5000, attack: 0.01, decay: 0.08, sustain: 0, release: 0.03, length: 0.15 },
   rim: { osc1Wave: "triangle", osc1Level: 1, tune: 43, fmRatio: 2.5, fmAmount: 1.5, filterType: "bandpass", cutoff: 1700, resonance: 2, attack: 0, decay: 0.04, sustain: 0, release: 0.02, length: 0.1 },
+  piano: { osc1Wave: "triangle", fmAmount: 1.2, cutoff: 5000, decay: 0.6, sustain: 0, length: 1.5 },
+  electric_piano: { osc1Wave: "sine", fmAmount: 2, cutoff: 5000, decay: 0.8, sustain: 0.15, length: 1.6 },
+  organ: { osc1Wave: "square", osc2Wave: "sine", osc2Level: 0.6, osc2Semi: 12, cutoff: 3000, sustain: 0.8, release: 0.08, length: 1.2 },
+  chord: { osc1Wave: "saw", osc2Wave: "triangle", osc2Level: 0.25, chord: "minor7", cutoff: 1800, filterEnv: 1.5, filterDecay: 0.2, decay: 0.35, sustain: 0.15, release: 0.12, length: 1 },
+  strings: { osc1Wave: "saw", unison: 5, spread: 14, cutoff: 2400, attack: 0.2, sustain: 0.8, release: 0.6, length: 2.5 },
+  brass: { osc1Wave: "saw", osc2Level: 0.4, osc2Detune: 6, cutoff: 1200, filterEnv: 2, filterAttack: 0.04, attack: 0.03, decay: 0.2, sustain: 0.6, length: 1 },
+  guitar: { osc1Wave: "triangle", osc2Wave: "sine", osc2Level: 0.2, osc2Semi: 12, cutoff: 3500, decay: 0.2, sustain: 0, length: 0.7 },
+  mallet: { osc1Wave: "sine", fmRatio: 3.5, fmAmount: 2, cutoff: 8000, decay: 0.7, sustain: 0, length: 1.3 },
+  vocal: { osc1Wave: "saw", osc2Wave: "triangle", osc2Level: 0.2, vowel: "ah", noise: 0.03, cutoff: 6500, attack: 0.015, decay: 0.2, sustain: 0.4, release: 0.1, length: 0.7 },
+  atmosphere: { osc1Wave: "triangle", unison: 5, spread: 18, noise: 0.2, cutoff: 2000, attack: 0.8, sustain: 0.7, release: 1, length: 4 },
+  crash: { osc1Wave: "square", osc1Level: 0.3, fmRatio: 5.5, fmAmount: 10, noise: 0.9, tune: 24, filterType: "highpass", cutoff: 3500, attack: 0.001, decay: 0.9, sustain: 0, release: 0.2, length: 1.8 },
+  transition: { osc1Level: 0, noise: 1, filterType: "bandpass", cutoff: 400, resonance: 2, filterEnv: 4, filterAttack: 1.5, attack: 1.5, decay: 0.2, sustain: 0.7, release: 0.1, length: 2 },
 }; // prettier-ignore
 
 export const instrumentPatch = (kind: SoundKind): Patch => clampPatch(INSTRUMENT_PATCH[kind]);

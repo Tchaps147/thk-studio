@@ -2,6 +2,7 @@
 // a gesture (live preview, one command on release) or a Try (previewed, committed by Keep).
 import { create } from "zustand";
 import type { Patch } from "immer";
+import type { AssistantProvider } from "@thk/api";
 import { clamp, clipById, trackById, type Song, type Sound, type SoundKind, type VariationSpec } from "@thk/song";
 import { emptyHistory, push, record, redo as redoH, undo as undoH, type Command, type History } from "./history.ts";
 
@@ -60,7 +61,7 @@ export interface StudioState {
   status: string;
   chat: ChatMsg[];
   groups: Record<string, VarGroup>;
-  ai: { available: boolean; busy: boolean };
+  ai: { available: boolean; busy: boolean; provider: AssistantProvider; api: boolean; chatgptReady: boolean };
 }
 
 export const useStudio = create<StudioState>()(() => ({
@@ -77,7 +78,7 @@ export const useStudio = create<StudioState>()(() => ({
   status: "Autosaves in this browser",
   chat: [],
   groups: {},
-  ai: { available: false, busy: false },
+  ai: { available: false, busy: false, provider: "auto", api: false, chatgptReady: false },
 }));
 
 export const get = () => useStudio.getState();

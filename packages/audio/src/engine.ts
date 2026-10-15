@@ -7,6 +7,7 @@ import { audible, planStep, type Song, type Track } from "@thk/song";
 
 export interface BufferLookup {
   get(id: string): AudioBuffer | undefined;
+  resolve?(id: string, rate: number, velocity: number, take: number): { buffer: AudioBuffer; rate: number } | undefined;
 }
 
 export interface TriggerOptions {
@@ -54,6 +55,7 @@ export class Engine {
   private readonly tn = new Map<string, TrackNodes>();
   private readonly voices = new Map<string, Voice>();
   private readonly active = new Set<AudioBufferSourceNode>();
+  private readonly takes = new Map<string, number>();
   private song: Song | null = null;
 
   constructor(
@@ -136,10 +138,15 @@ export class Engine {
 
   /** Starts one voice. tr = null plays through the preview bus (auditioning in the browser). */
   trigger(tr: Track | null, sampleId: string, time: number, o: TriggerOptions = {}) {
-    const buf = this.buffers.get(sampleId);
+    const v = o.vel ?? 1,
+      requestedRate = o.rate || 1;
+    const key = `${tr?.id ?? "preview"}:${sampleId}:${Math.round(12 * Math.log2(requestedRate))}`;
+    const take = this.takes.get(key) ?? 0;
+    const resolved = this.buffers.resolve?.(sampleId, requestedRate, v, take);
+    const buf = resolved?.buffer ?? this.buffers.get(sampleId);
     if (!buf) return;
-    const rate = o.rate || 1,
-      v = o.vel ?? 1;
+    if (resolved) this.takes.set(key, take + 1);
+    const rate = resolved?.rate ?? requestedRate;
     const dest = tr ? this.nodes(tr).filter : this.preview;
     const src = this.ac.createBufferSource();
     src.buffer = buf;
@@ -206,6 +213,7 @@ export class Engine {
     }
     this.active.clear();
     this.voices.clear();
+    this.takes.clear();
     for (const n of this.tn.values()) {
       n.duck.gain.cancelScheduledValues(0);
       n.duck.gain.value = 1;

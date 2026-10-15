@@ -1,6 +1,6 @@
 // The live audio side: one AudioContext, the sample bank, the engine and the transport.
 // The engine follows the store's song; samples load lazily (the song's sounds first, a browser
-// category when its tab opens, anything else on first audition).
+// anything else on first audition; browsing categories never downloads the full library).
 import { Engine, SampleBank, Transport } from "@thk/audio";
 import { MELODIC, ROOT, SPB, type Sound, type Track } from "@thk/song";
 import { get, setState, toast, useStudio } from "./store.ts";
@@ -59,9 +59,11 @@ export async function auditionDraft(s: Sound, p = ROOT) {
     choke: "aud",
   });
 }
-export function auditionSample(id: string) {
+export function auditionSample(id: string, pitch = ROOT) {
   wake();
-  void playWhenLoaded(id, () => audio().engine.trigger(null, id, now(), { choke: "aud" }));
+  void playWhenLoaded(id, () =>
+    audio().engine.trigger(null, id, now(), { choke: "aud", rate: 2 ** ((pitch - ROOT) / 12) }),
+  );
 }
 export function auditionNote(tr: Track, p: number) {
   if (tr.type !== "synth") return;

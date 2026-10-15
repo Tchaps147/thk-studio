@@ -1,0 +1,384 @@
+[
+  {
+    "id": "THK_RecordedGuitar_01_Acoustic",
+    "kind": "guitar",
+    "name": "Recorded Acoustic Guitar",
+    "description": "Real archtop guitar recorded with a microphone. Soft and hard picks with alternating takes.",
+    "note": "",
+    "hz": 0,
+    "dur": 5.297301587301587,
+    "peaks": [
+      0.542,
+      0.421,
+      0.355,
+      0.279,
+      0.225,
+      0.179,
+      0.142,
+      0.113,
+      0.077,
+      0.069,
+      0.059,
+      0.041,
+      0.036,
+      0.032,
+      0.027,
+      0.026,
+      0.024,
+      0.024,
+      0.026,
+      0.027,
+      0.028,
+      0.03,
+      0.031,
+      0.03,
+      0.029,
+      0.026,
+      0.023,
+      0.018,
+      0.017,
+      0.016,
+      0.014,
+      0.013,
+      0.012,
+      0.011,
+      0.01,
+      0.008,
+      0.008,
+      0.007,
+      0.007,
+      0.007,
+      0.007,
+      0.006,
+      0.006,
+      0.006,
+      0.006,
+      0.005,
+      0.005,
+      0.005,
+      0.004,
+      0.004,
+      0.003,
+      0.003,
+      0.002,
+      0.003,
+      0.002,
+      0.002,
+      0.002,
+      0.002,
+      0.002,
+      0.002
+    ],
+    "sampleMap": [
+      {
+        "root": 37,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_37_v2_rr1",
+          "GTR_Acoustic_37_v2_rr2"
+        ]
+      },
+      {
+        "root": 37,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_37_v4_rr1",
+          "GTR_Acoustic_37_v4_rr2"
+        ]
+      },
+      {
+        "root": 42,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_42_v2_rr1",
+          "GTR_Acoustic_42_v2_rr2"
+        ]
+      },
+      {
+        "root": 42,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_42_v4_rr1",
+          "GTR_Acoustic_42_v4_rr2"
+        ]
+      },
+      {
+        "root": 48,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_48_v2_rr1",
+          "GTR_Acoustic_48_v2_rr2"
+        ]
+      },
+      {
+        "root": 48,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_48_v4_rr1",
+          "GTR_Acoustic_48_v4_rr2"
+        ]
+      },
+      {
+        "root": 54,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_54_v2_rr1",
+          "GTR_Acoustic_54_v2_rr2"
+        ]
+      },
+      {
+        "root": 54,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_54_v4_rr1",
+          "GTR_Acoustic_54_v4_rr2"
+        ]
+      },
+      {
+        "root": 60,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_60_v2_rr1",
+          "GTR_Acoustic_60_v2_rr2"
+        ]
+      },
+      {
+        "root": 60,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_60_v4_rr1",
+          "GTR_Acoustic_60_v4_rr2"
+        ]
+      },
+      {
+        "root": 66,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_66_v2_rr1",
+          "GTR_Acoustic_66_v2_rr2"
+        ]
+      },
+      {
+        "root": 66,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_66_v4_rr1",
+          "GTR_Acoustic_66_v4_rr2"
+        ]
+      },
+      {
+        "root": 72,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Acoustic_72_v2_rr1",
+          "GTR_Acoustic_72_v2_rr2"
+        ]
+      },
+      {
+        "root": 72,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Acoustic_72_v4_rr1",
+          "GTR_Acoustic_72_v4_rr2"
+        ]
+      }
+    ],
+    "recording": {
+      "pack": "Shinyguitar",
+      "author": "D. Smolken / Karoryfer Samples",
+      "license": "CC0-1.0",
+      "source": "https://github.com/sfzinstruments/karoryfer.shinyguitar"
+    }
+  },
+  {
+    "id": "THK_RecordedGuitar_02_Electric",
+    "kind": "guitar",
+    "name": "Recorded Electric Guitar",
+    "description": "Real guitar recorded from its electric pickup. Clean, unamped tone with soft and hard picks and alternating takes.",
+    "note": "",
+    "hz": 0,
+    "dur": 5.297301587301587,
+    "peaks": [
+      0.843,
+      0.249,
+      0.153,
+      0.129,
+      0.147,
+      0.137,
+      0.095,
+      0.095,
+      0.096,
+      0.068,
+      0.066,
+      0.055,
+      0.046,
+      0.041,
+      0.039,
+      0.038,
+      0.038,
+      0.036,
+      0.036,
+      0.04,
+      0.043,
+      0.043,
+      0.042,
+      0.036,
+      0.028,
+      0.022,
+      0.022,
+      0.025,
+      0.027,
+      0.027,
+      0.026,
+      0.023,
+      0.021,
+      0.019,
+      0.019,
+      0.019,
+      0.019,
+      0.019,
+      0.018,
+      0.017,
+      0.017,
+      0.018,
+      0.018,
+      0.017,
+      0.016,
+      0.015,
+      0.013,
+      0.013,
+      0.012,
+      0.012,
+      0.012,
+      0.012,
+      0.01,
+      0.009,
+      0.009,
+      0.01,
+      0.01,
+      0.01,
+      0.01,
+      0.01
+    ],
+    "sampleMap": [
+      {
+        "root": 37,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_37_v2_rr1",
+          "GTR_Electric_37_v2_rr2"
+        ]
+      },
+      {
+        "root": 37,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_37_v4_rr1",
+          "GTR_Electric_37_v4_rr2"
+        ]
+      },
+      {
+        "root": 42,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_42_v2_rr1",
+          "GTR_Electric_42_v2_rr2"
+        ]
+      },
+      {
+        "root": 42,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_42_v4_rr1",
+          "GTR_Electric_42_v4_rr2"
+        ]
+      },
+      {
+        "root": 48,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_48_v2_rr1",
+          "GTR_Electric_48_v2_rr2"
+        ]
+      },
+      {
+        "root": 48,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_48_v4_rr1",
+          "GTR_Electric_48_v4_rr2"
+        ]
+      },
+      {
+        "root": 54,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_54_v2_rr1",
+          "GTR_Electric_54_v2_rr2"
+        ]
+      },
+      {
+        "root": 54,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_54_v4_rr1",
+          "GTR_Electric_54_v4_rr2"
+        ]
+      },
+      {
+        "root": 60,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_60_v2_rr1",
+          "GTR_Electric_60_v2_rr2"
+        ]
+      },
+      {
+        "root": 60,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_60_v4_rr1",
+          "GTR_Electric_60_v4_rr2"
+        ]
+      },
+      {
+        "root": 66,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_66_v2_rr1",
+          "GTR_Electric_66_v2_rr2"
+        ]
+      },
+      {
+        "root": 66,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_66_v4_rr1",
+          "GTR_Electric_66_v4_rr2"
+        ]
+      },
+      {
+        "root": 72,
+        "maxVelocity": 0.65,
+        "files": [
+          "GTR_Electric_72_v2_rr1",
+          "GTR_Electric_72_v2_rr2"
+        ]
+      },
+      {
+        "root": 72,
+        "maxVelocity": 1,
+        "files": [
+          "GTR_Electric_72_v4_rr1",
+          "GTR_Electric_72_v4_rr2"
+        ]
+      }
+    ],
+    "recording": {
+      "pack": "Shinyguitar",
+      "author": "D. Smolken / Karoryfer Samples",
+      "license": "CC0-1.0",
+      "source": "https://github.com/sfzinstruments/karoryfer.shinyguitar"
+    }
+  }
+]

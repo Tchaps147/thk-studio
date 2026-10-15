@@ -409,6 +409,10 @@ export function openMaker(kind: SoundKind, from?: Sound) {
     peaks: [],
     patch,
     custom: true,
+    ...(from?.family ? { family: from.family } : {}),
+    ...(from?.description ? { description: from.description } : {}),
+    ...(from?.recording ? { recording: from.recording } : {}),
+    ...(from?.tags ? { tags: from.tags } : {}),
   };
   setState({ maker: { draft, isNew: !isOwn } });
 }

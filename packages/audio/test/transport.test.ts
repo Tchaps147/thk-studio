@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { N, SPB, emptySong, makeClip, stepDur, type Song } from "@thk/song";
+import { KIT, N, SPB, emptySong, makeClip, stepDur, type Song } from "@thk/song";
 import { Engine, SampleBank, Transport, fmtPos, soundsUsed } from "../src/index.ts";
 
 /** A fake audio clock plus an engine that records scheduled steps. */
@@ -108,7 +108,10 @@ describe("SampleBank", () => {
     expect(fetcher).toHaveBeenCalledWith("/kit/THK_Clap_01_Classic.wav");
     expect(bank.has("THK_Clap_01_Classic")).toBe(true);
     await bank.loadKind("clap");
-    expect(bank.size).toBe(8 + 2); // 8 kit claps fetched, 2 factory claps rendered
+    const claps = KIT.filter((s) => s.kind === "clap");
+    expect(bank.size).toBe(claps.length);
+    expect(fetcher).toHaveBeenCalledTimes(claps.filter((s) => !s.patch).length);
+    expect(render).toHaveBeenCalledTimes(claps.filter((s) => s.patch).length);
   });
   it("skips unknown ids and remembers failures", async () => {
     const fetcher = vi.fn(async () => {
@@ -119,6 +122,40 @@ describe("SampleBank", () => {
     expect(await bank.load("THK_Rim_01_Shot")).toBeUndefined();
     expect(await bank.load("THK_Rim_01_Shot")).toBeUndefined();
     expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+  it("shares all recorded-instrument loads and resolves the pitch, layer and take", async () => {
+    const fetcher = vi.fn(async (url: string) => new TextEncoder().encode(url).buffer as ArrayBuffer);
+    const decoder = {
+      decodeAudioData: vi.fn(
+        async (d: ArrayBuffer) => ({ source: new TextDecoder().decode(d) }) as unknown as AudioBuffer,
+      ),
+    };
+    const bank = new SampleBank(decoder, "/kit/", fetcher);
+    const id = "THK_RecordedGuitar_01_Acoustic";
+    await Promise.all([bank.load(id), bank.load(id)]);
+    expect(fetcher).toHaveBeenCalledTimes(29);
+    expect(bank.size).toBe(1);
+    const a = bank.resolve(id, 2, 0.5, 0)!;
+    expect(a.rate).toBe(1);
+    expect(a.buffer).toEqual({ source: "/kit/GTR_Acoustic_48_v2_rr1.wav" });
+    expect(bank.resolve(id, 2, 1, 1)!.buffer).toEqual({ source: "/kit/GTR_Acoustic_48_v4_rr2.wav" });
+    await bank.load(id);
+    expect(fetcher).toHaveBeenCalledTimes(29);
+  });
+  it("does not mark a partly loaded recorded instrument ready", async () => {
+    const fetcher = vi.fn(async (url: string) => {
+      if (url.includes("_48_v4_rr2")) throw new Error("Missing take");
+      return new ArrayBuffer(1);
+    });
+    const bank = new SampleBank(
+      { decodeAudioData: vi.fn(async () => ({ duration: 5 }) as AudioBuffer) },
+      "/kit/",
+      fetcher,
+    );
+    const id = "THK_RecordedGuitar_01_Acoustic";
+    expect(await bank.load(id)).toBeUndefined();
+    expect(bank.has(id)).toBe(false);
+    expect(bank.resolve(id, 2, 1, 0)).toBeUndefined();
   });
   it("knows every sound a song can play", () => {
     const s = emptySong();

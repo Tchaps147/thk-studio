@@ -1,0 +1,446 @@
+[
+  {
+    "id": "THK_SynBass_01_Rubber_Sub",
+    "hash": "zacef3"
+  },
+  {
+    "id": "THK_SynBass_02_Acid_Line",
+    "hash": "xbdo8i"
+  },
+  {
+    "id": "THK_SynBass_03_Tech_Growl",
+    "hash": "ko5afy"
+  },
+  {
+    "id": "THK_SynBass_04_Deep_Reese",
+    "hash": "bqxl8s"
+  },
+  {
+    "id": "THK_SynBass_05_Donk",
+    "hash": "cevu2q"
+  },
+  {
+    "id": "THK_SynBass_06_Minimal_Thump",
+    "hash": "oy55fc"
+  },
+  {
+    "id": "THK_SynBass_07_Square_Bounce",
+    "hash": "1k2c0zs"
+  },
+  {
+    "id": "THK_SynBass_08_Chicago_Organ",
+    "hash": "u8fobr"
+  },
+  {
+    "id": "THK_SynBass_09_FM_Wobble",
+    "hash": "1gjc3ij"
+  },
+  {
+    "id": "THK_SynBass_10_Rolling_Pluck",
+    "hash": "h8k9jd"
+  },
+  {
+    "id": "THK_Lead_01_Detuned_Saw",
+    "hash": "5lu32l"
+  },
+  {
+    "id": "THK_Lead_02_Square_Hook",
+    "hash": "1gu1wmq"
+  },
+  {
+    "id": "THK_Lead_03_Acid_Squeal",
+    "hash": "1ymtott"
+  },
+  {
+    "id": "THK_Lead_04_Soft_Sine",
+    "hash": "yhm7z8"
+  },
+  {
+    "id": "THK_Lead_05_Hoover",
+    "hash": "waqvm"
+  },
+  {
+    "id": "THK_Lead_06_Sync_Buzz",
+    "hash": "13j8t2c"
+  },
+  {
+    "id": "THK_Lead_07_Whistle",
+    "hash": "1yjaj0w"
+  },
+  {
+    "id": "THK_Pad_01_Warm_Strings",
+    "hash": "uehtgn"
+  },
+  {
+    "id": "THK_Pad_02_Dark_Drone",
+    "hash": "1nvlkf8"
+  },
+  {
+    "id": "THK_Pad_03_Glass",
+    "hash": "84nrv7"
+  },
+  {
+    "id": "THK_Pad_04_Breath",
+    "hash": "ablqwx"
+  },
+  {
+    "id": "THK_Pad_05_Choir_Ah",
+    "hash": "4u5afz"
+  },
+  {
+    "id": "THK_Pad_06_Swell",
+    "hash": "gl91ye"
+  },
+  {
+    "id": "THK_Stab_01_Minor_Chord",
+    "hash": "12orc7z"
+  },
+  {
+    "id": "THK_Stab_02_Organ_Hit",
+    "hash": "dyj835"
+  },
+  {
+    "id": "THK_Stab_03_Dub_Chord",
+    "hash": "qz1rg9"
+  },
+  {
+    "id": "THK_Stab_04_Rave_Stab",
+    "hash": "1iybs2u"
+  },
+  {
+    "id": "THK_Stab_05_Piano_Hit",
+    "hash": "14jswmb"
+  },
+  {
+    "id": "THK_Stab_06_Brass_Blip",
+    "hash": "28186j"
+  },
+  {
+    "id": "THK_Pluck_01_Marimba",
+    "hash": "okt4n"
+  },
+  {
+    "id": "THK_Pluck_02_Bell",
+    "hash": "1rk9axh"
+  },
+  {
+    "id": "THK_Pluck_03_Kalimba",
+    "hash": "1p1gdo3"
+  },
+  {
+    "id": "THK_Pluck_04_Saw_Pluck",
+    "hash": "i9jf10"
+  },
+  {
+    "id": "THK_Pluck_05_Electric_Piano",
+    "hash": "fdfeur"
+  },
+  {
+    "id": "THK_Pluck_06_Glass_Drop",
+    "hash": "1epl1x0"
+  },
+  {
+    "id": "THK_FX_01_Noise_Riser",
+    "hash": "bn2jgy"
+  },
+  {
+    "id": "THK_FX_02_Downlifter",
+    "hash": "1iwvyzm"
+  },
+  {
+    "id": "THK_FX_03_Impact",
+    "hash": "vicayn"
+  },
+  {
+    "id": "THK_FX_04_Laser_Zap",
+    "hash": "vf9j8t"
+  },
+  {
+    "id": "THK_FX_05_Sweep_Up",
+    "hash": "1mtnyet"
+  },
+  {
+    "id": "THK_SynKick_01_Sub_Thump",
+    "hash": "1l0awi3"
+  },
+  {
+    "id": "THK_SynKick_02_Punchy_Click",
+    "hash": "1rheu63"
+  },
+  {
+    "id": "THK_SynKick_03_Long_Boom",
+    "hash": "1dqtjeq"
+  },
+  {
+    "id": "THK_SynKick_04_Distorted",
+    "hash": "atpf92"
+  },
+  {
+    "id": "THK_SynSnare_01_Tech_Snare",
+    "hash": "jha63n"
+  },
+  {
+    "id": "THK_SynSnare_02_Noise_Snap",
+    "hash": "1jil2qr"
+  },
+  {
+    "id": "THK_SynClap_01_Big_Clap",
+    "hash": "1w2lm33"
+  },
+  {
+    "id": "THK_SynClap_02_Tight_Clap",
+    "hash": "15k894o"
+  },
+  {
+    "id": "THK_SynHatC_01_Metal_Tick",
+    "hash": "h43w4d"
+  },
+  {
+    "id": "THK_SynHatC_02_Noise_Hat",
+    "hash": "80qno5"
+  },
+  {
+    "id": "THK_SynHatO_01_Sizzle",
+    "hash": "wd9eeu"
+  },
+  {
+    "id": "THK_SynPerc_01_Bongo_Blip",
+    "hash": "33mytm"
+  },
+  {
+    "id": "THK_SynPerc_02_Cowbell",
+    "hash": "5yty4b"
+  },
+  {
+    "id": "THK_SynPerc_03_Woodblock",
+    "hash": "1b8uzbz"
+  },
+  {
+    "id": "THK_SynTom_01_Floor_Tom",
+    "hash": "us94e4"
+  },
+  {
+    "id": "THK_Chord_01_Deep_Minor_Seven",
+    "hash": "1nbgeth"
+  },
+  {
+    "id": "THK_Chord_02_Bright_Major_House",
+    "hash": "spk3ji"
+  },
+  {
+    "id": "THK_Chord_03_Warm_Major_Seven",
+    "hash": "p4pkx"
+  },
+  {
+    "id": "THK_Chord_04_Dub_Minor_Stab",
+    "hash": "jak5lx"
+  },
+  {
+    "id": "THK_Chord_05_Garage_Seven",
+    "hash": "q7g8f3"
+  },
+  {
+    "id": "THK_Chord_06_Disco_Dominant",
+    "hash": "18j8zea"
+  },
+  {
+    "id": "THK_Chord_07_Open_Suspended_Two",
+    "hash": "1wq3hl1"
+  },
+  {
+    "id": "THK_Chord_08_Rave_Suspended_Four",
+    "hash": "ghhcr"
+  },
+  {
+    "id": "THK_Vocal_01_Ah_Chop",
+    "hash": "9exahw"
+  },
+  {
+    "id": "THK_Vocal_02_Oh_Hook",
+    "hash": "1esb2xm"
+  },
+  {
+    "id": "THK_Vocal_03_Ee_Tick",
+    "hash": "3zuvqj"
+  },
+  {
+    "id": "THK_Vocal_04_Oo_Pulse",
+    "hash": "v86zef"
+  },
+  {
+    "id": "THK_Vocal_05_Eh_Answer",
+    "hash": "1qcmm57"
+  },
+  {
+    "id": "THK_Vocal_06_Breathy_Ah",
+    "hash": "krjvws"
+  },
+  {
+    "id": "THK_Vocal_07_Choir_Oo",
+    "hash": "zyxdm7"
+  },
+  {
+    "id": "THK_Vocal_08_Airy_Eh",
+    "hash": "15dwlzj"
+  },
+  {
+    "id": "THK_Chord_09_Classic_Club_Piano",
+    "hash": "c0m4qo"
+  },
+  {
+    "id": "THK_Chord_10_90s_Piano_Anthem",
+    "hash": "1oefqlh"
+  },
+  {
+    "id": "THK_Chord_11_Warehouse_Piano_Stab",
+    "hash": "8qvdot"
+  },
+  {
+    "id": "THK_Chord_12_Gospel_House_Nine",
+    "hash": "j11uqj"
+  },
+  {
+    "id": "THK_Chord_13_Italo_Piano_Lift",
+    "hash": "1jn3iog"
+  },
+  {
+    "id": "THK_Chord_14_Classic_Club_Organ",
+    "hash": "1ygln32"
+  },
+  {
+    "id": "THK_Chord_15_Garage_Organ_Bounce",
+    "hash": "1gtfxoq"
+  },
+  {
+    "id": "THK_Chord_16_90s_Organ_Stab",
+    "hash": "tair17"
+  },
+  {
+    "id": "THK_Chord_17_Deep_Drawbar_Seven",
+    "hash": "ho1qec"
+  },
+  {
+    "id": "THK_Chord_18_Percussive_Organ_Hit",
+    "hash": "1p495n4"
+  },
+  {
+    "id": "THK_Chord_19_Soulful_Electric_Nine",
+    "hash": "zqvn97"
+  },
+  {
+    "id": "THK_Chord_20_Warm_Lounge_Eleven",
+    "hash": "valybl"
+  },
+  {
+    "id": "THK_Chord_21_Velvet_Major_Nine",
+    "hash": "bp6gu8"
+  },
+  {
+    "id": "THK_Chord_22_Sunset_Minor_Six",
+    "hash": "1srf3x1"
+  },
+  {
+    "id": "THK_Chord_23_Floating_Suspended_Chord",
+    "hash": "1k0hatk"
+  },
+  {
+    "id": "THK_Chord_24_Classic_Dub_Minor",
+    "hash": "1mdg45o"
+  },
+  {
+    "id": "THK_Chord_25_Smoky_Dub_Nine",
+    "hash": "1k3lay8"
+  },
+  {
+    "id": "THK_Chord_26_Berlin_Open_Stab",
+    "hash": "1isu98i"
+  },
+  {
+    "id": "THK_Chord_27_Dub_Organ_Seven",
+    "hash": "tfgrq6"
+  },
+  {
+    "id": "THK_Chord_28_Resonant_Dub_Pulse",
+    "hash": "1ozp1vl"
+  },
+  {
+    "id": "THK_Chord_29_Classic_Rave_Chord",
+    "hash": "ymvf4t"
+  },
+  {
+    "id": "THK_Chord_30_Warehouse_Minor_Stack",
+    "hash": "1le8376"
+  },
+  {
+    "id": "THK_Chord_31_Big_Room_Major_Lift",
+    "hash": "xwlc5c"
+  },
+  {
+    "id": "THK_Chord_32_Hoover_Chord_Punch",
+    "hash": "14whrsm"
+  },
+  {
+    "id": "THK_Chord_33_Rave_Brass_Stab",
+    "hash": "1nezqbw"
+  },
+  {
+    "id": "THK_Chord_34_Disco_String_Six",
+    "hash": "1flqww5"
+  },
+  {
+    "id": "THK_Chord_35_Funky_Clav_Chord",
+    "hash": "1n2fa2t"
+  },
+  {
+    "id": "THK_Chord_36_French_Filter_Chord",
+    "hash": "1xv232j"
+  },
+  {
+    "id": "THK_Chord_37_Disco_Brass_Nine",
+    "hash": "rp0vr2"
+  },
+  {
+    "id": "THK_Chord_38_Uplifting_House_Six",
+    "hash": "1nwlkg0"
+  },
+  {
+    "id": "THK_Chord_39_Classic_Tech_Stab",
+    "hash": "ivgr6"
+  },
+  {
+    "id": "THK_Chord_40_Rubber_FM_Chord",
+    "hash": "174nl83"
+  },
+  {
+    "id": "THK_Chord_41_Dirty_Warehouse_Chord",
+    "hash": "akcqcu"
+  },
+  {
+    "id": "THK_Chord_42_Metallic_Tech_Nine",
+    "hash": "vrrnv8"
+  },
+  {
+    "id": "THK_Chord_43_Acid_Chord_Jab",
+    "hash": "9zxy90"
+  },
+  {
+    "id": "THK_Chord_44_Minimal_House_Tick",
+    "hash": "pwqln5"
+  },
+  {
+    "id": "THK_Chord_45_Muted_Minor_Seven",
+    "hash": "1yh61b8"
+  },
+  {
+    "id": "THK_Chord_46_Dry_Pluck_Nine",
+    "hash": "1ozbapj"
+  },
+  {
+    "id": "THK_Chord_47_Hollow_Suspended_Hit",
+    "hash": "ens8d8"
+  },
+  {
+    "id": "THK_Chord_48_Deep_Micro_Organ",
+    "hash": "12dz257"
+  }
+]

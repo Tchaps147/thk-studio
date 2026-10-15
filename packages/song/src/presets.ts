@@ -2,8 +2,17 @@
 // patch plus a few changes. Only ever append; never rename or reorder (ids are permanent).
 import { clampPatch, INSTRUMENT_PATCH, type Patch } from "./patch.ts";
 import type { Sound, SoundKind } from "./types.ts";
+import { HOUSE_CHORDS } from "./house-chords.ts";
+import { HOUSE_ESSENTIALS } from "./house-essentials.ts";
+import { ACOUSTIC_GUITARS } from "./acoustic-guitars.ts";
 
-type Def = [kind: SoundKind, prefix: string, name: string, changes: Partial<Patch>];
+type Def = [
+  kind: SoundKind,
+  prefix: string,
+  name: string,
+  changes: Partial<Patch>,
+  details?: Pick<Sound, "family" | "description">,
+];
 
 const DEFS: Def[] = [
   // ---- basses (synth; the 30 rendered basses stay in the kit) ----
@@ -68,14 +77,41 @@ const DEFS: Def[] = [
   ["perc", "SynPerc", "Cowbell", { osc1Wave: "square", osc2Wave: "square", osc2Level: 0.8, osc2Semi: 9, tune: 36, filterType: "bandpass", cutoff: 800, resonance: 2, decay: 0.25, length: 0.4 }],
   ["perc", "SynPerc", "Woodblock", { osc1Wave: "sine", tune: 46, pitchEnv: 3, decay: 0.05, length: 0.12 }],
   ["tom", "SynTom", "Floor Tom", {}],
+  // ---- chords: every note triggers the full voicing, rooted on that note ----
+  ["chord", "Chord", "Deep Minor Seven", { chord: "minor7", cutoff: 1200, filterEnv: 1, decay: 0.45, length: 1.2 }],
+  ["chord", "Chord", "Bright Major House", { chord: "major", cutoff: 3600, filterEnv: 1.5, decay: 0.22, sustain: 0, length: 0.7 }],
+  ["chord", "Chord", "Warm Major Seven", { chord: "major7", osc1Wave: "triangle", osc2Wave: "sine", osc2Level: 0.35, cutoff: 2400, filterEnv: 0.5, sustain: 0.5, length: 1.8 }],
+  ["chord", "Chord", "Dub Minor Stab", { chord: "minor", cutoff: 600, resonance: 3, filterEnv: 3, filterDecay: 0.18, decay: 0.3, sustain: 0.05, length: 0.9 }],
+  ["chord", "Chord", "Garage Seven", { chord: "minor7", osc1Wave: "square", osc2Wave: "sine", osc2Level: 0.5, osc2Semi: 12, cutoff: 2200, filterEnv: 1, decay: 0.18, sustain: 0, length: 0.6 }],
+  ["chord", "Chord", "Disco Dominant", { chord: "dominant7", cutoff: 4000, resonance: 1, filterEnv: 0.5, attack: 0.01, decay: 0.3, sustain: 0.15, length: 0.9 }],
+  ["chord", "Chord", "Open Suspended Two", { chord: "sus2", osc1Wave: "triangle", unison: 3, spread: 8, cutoff: 3200, filterEnv: 0, sustain: 0.65, release: 0.3, length: 2 }],
+  ["chord", "Chord", "Rave Suspended Four", { chord: "sus4", unison: 3, spread: 10, cutoff: 3000, filterEnv: 1, decay: 0.18, sustain: 0.1, drive: 0.15, length: 0.8 }],
+  // ---- synthetic vocals: vowel formants and envelopes, no recorded words ----
+  ["vocal", "Vocal", "Ah Chop", { vowel: "ah", decay: 0.15, sustain: 0, length: 0.35, release: 0.06 }],
+  ["vocal", "Vocal", "Oh Hook", { vowel: "oh", attack: 0.02, decay: 0.18, sustain: 0.3, length: 0.65 }],
+  ["vocal", "Vocal", "Ee Tick", { vowel: "ee", attack: 0.003, decay: 0.08, sustain: 0, length: 0.2, release: 0.03 }],
+  ["vocal", "Vocal", "Oo Pulse", { vowel: "oo", decay: 0.2, sustain: 0.15, length: 0.5, cutoff: 4500 }],
+  ["vocal", "Vocal", "Eh Answer", { vowel: "eh", attack: 0.01, decay: 0.12, sustain: 0, length: 0.4 }],
+  ["vocal", "Vocal", "Breathy Ah", { vowel: "ah", osc1Level: 0.55, noise: 0.3, attack: 0.07, decay: 0.3, sustain: 0.3, length: 1, release: 0.2 }],
+  ["vocal", "Vocal", "Choir Oo", { vowel: "oo", unison: 5, spread: 10, attack: 0.2, decay: 0.5, sustain: 0.7, length: 2.2, release: 0.5 }],
+  ["vocal", "Vocal", "Airy Eh", { vowel: "eh", osc1Wave: "triangle", osc2Level: 0.15, noise: 0.2, unison: 3, spread: 7, attack: 0.12, sustain: 0.6, length: 1.6, release: 0.35 }],
+  ...HOUSE_CHORDS.map((s): Def => ["chord", "Chord", s.name, s.patch, { family: s.family, description: s.description }]),
+  ...HOUSE_ESSENTIALS.map((s): Def => [s.kind, s.prefix, s.name, s.patch, { description: s.description }]),
+  ...ACOUSTIC_GUITARS.map((s): Def => ["guitar", "Guitar", s.name, s.patch, { description: s.description }]),
 ]; // prettier-ignore
+
+const STARTER_FAMILIES: Record<string, NonNullable<Sound["family"]>> = {
+  "Deep Minor Seven": "deep", "Bright Major House": "disco", "Warm Major Seven": "deep",
+  "Dub Minor Stab": "dub", "Garage Seven": "organ", "Disco Dominant": "disco",
+  "Open Suspended Two": "deep", "Rave Suspended Four": "rave",
+}; // prettier-ignore
 
 const slugName = (n: string) => n.replace(/[^A-Za-z0-9]+/g, "_");
 
 /** Factory presets as catalog sounds. */
 export const FACTORY: readonly Sound[] = (() => {
   const count: Record<string, number> = {};
-  return DEFS.map(([kind, prefix, name, changes]) => {
+  return DEFS.map(([kind, prefix, name, changes, details]) => {
     const n = (count[prefix] = (count[prefix] ?? 0) + 1);
     const patch = clampPatch(changes, clampPatch(INSTRUMENT_PATCH[kind]));
     return {
@@ -87,6 +123,8 @@ export const FACTORY: readonly Sound[] = (() => {
       dur: patch.length,
       peaks: [],
       patch,
+      ...(kind === "chord" ? { family: STARTER_FAMILIES[name] } : {}),
+      ...details,
     };
   });
 })();

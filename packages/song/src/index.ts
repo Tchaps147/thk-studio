@@ -9,3 +9,5 @@ export * from "./assistant.ts";
 export * from "./patch.ts";
 export * from "./presets.ts";
 export * from "./sounds.ts";
+export * from "./chords.ts";
+export * from "./multisample.ts";

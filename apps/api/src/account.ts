@@ -90,6 +90,9 @@ export async function runOnAccount(req: AssistantRequest, signal?: AbortSignal):
       systemPrompt: RULES,
       tools: [], // no built-in tools: only the studio's
       mcpServers: { [SERVER]: server },
+      // Only the studio server: without this the CLI also loads the account's claude.ai connectors
+      // (Gmail, Drive, ...), which added ~145k tokens of tool schemas from the second turn on.
+      strictMcpConfig: true,
       allowedTools: TOOLS.map((t) => `mcp__${SERVER}__${t.name}`),
       settingSources: [], // ignore CLAUDE.md files and user settings
       persistSession: false,
